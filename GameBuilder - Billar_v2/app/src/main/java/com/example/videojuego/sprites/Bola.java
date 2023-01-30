@@ -14,7 +14,7 @@ public class Bola extends Sprite implements OnColisionListener {
     public float centroX, centroY, radio;
     public boolean activa = true;
     public float rozamiento = (float) 0.98;
-    private boolean esAgujero;
+    private boolean agujero;
 
     public Bola(GameView game, int x, int y, int r, int color) {
         super(game);
@@ -28,10 +28,10 @@ public class Bola extends Sprite implements OnColisionListener {
         velActualX = velInicialX;
         velActualY = velInicialY;
 
-        this.esAgujero = false;
+        this.agujero = false;
     }
 
-    public Bola(GameView game, int x, int y, int r, int color, boolean esAgujero) {
+    public Bola(GameView game, int x, int y, int r, int color, boolean agujero) {
         super(game);
         this.game = (Billar) game;
         centroX = x;
@@ -43,7 +43,7 @@ public class Bola extends Sprite implements OnColisionListener {
         velActualX = velInicialX;
         velActualY = velInicialY;
 
-        this.esAgujero = esAgujero;
+        this.agujero = agujero;
     }
 
     @Override
@@ -97,8 +97,8 @@ public class Bola extends Sprite implements OnColisionListener {
     @Override
     public void onColisionEvent(Sprite s) {
         if (s instanceof Bola) {
+            Bola b = (Bola) s;
             if (activa) {
-                Bola b = (Bola) s;
                 float dy = (float) (b.centroY - centroY);
                 float dx = (float) (b.centroX - centroX);
                 float ang = (float) Math.atan2(dy, dx);
@@ -113,13 +113,16 @@ public class Bola extends Sprite implements OnColisionListener {
                 velActualX = (float) (cosa * vx2 - sina * vy2);
                 velActualY = (float) (cosa * vy2 + sina * vx2);
             }
-            if (isEsAgujero() && s.getColor() != Color.WHITE) {
-                s.setVisible(false);
-            } else if (isEsAgujero() && s.getColor() == Color.WHITE) {
-                ((Bola) s).centroX = 700;
-                ((Bola) s).centroY = 500;
+            if (b.isAgujero()) {
+                b.velActualX = 0f;
+                b.velActualY = 0f;
+                if (getColor() == Color.WHITE) {
+                    centroX = 700;
+                    centroY = 500;
+                } else {
+                    setVisible(false);
+                }
             }
-
         }
     }
 
@@ -160,11 +163,11 @@ public class Bola extends Sprite implements OnColisionListener {
         this.centroY *= -1;
     }
 
-    public boolean isEsAgujero() {
-        return esAgujero;
+    public boolean isAgujero() {
+        return agujero;
     }
 
-    public void setEsAgujero(boolean esAgujero) {
-        this.esAgujero = esAgujero;
+    public void setAgujero(boolean agujero) {
+        this.agujero = agujero;
     }
 }

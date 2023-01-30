@@ -70,6 +70,25 @@ public class Billar extends GameView implements OnTouchEventListener {
         bola1 = new Bola(this, 700, 500, 50, Color.WHITE);
         actores.add(bola1);
         bola1.setup();
+
+        // agujeros
+        agujero1 = new Bola(this, 50, 50, 50, Color.BLACK, true);
+        actores.add(agujero1);
+        agujero1.setup();
+
+        agujero2 = new Bola(this, 2050, 50, 50, Color.BLACK, true);
+        actores.add(agujero2);
+        agujero2.setup();
+
+        agujero3 = new Bola(this, 50, 1025, 50, Color.BLACK, true);
+        actores.add(agujero3);
+        agujero3.setup();
+
+        agujero4 = new Bola(this, 2050, 1025, 50, Color.BLACK, true);
+        actores.add(agujero4);
+        agujero4.setup();
+
+
     }
 
     //Realiza la lógica del juego, movimientos, física, colisiones, interacciones..etc
@@ -97,21 +116,6 @@ public class Billar extends GameView implements OnTouchEventListener {
 
         paint.setStrokeWidth(1);
         paint.setStyle(Paint.Style.FILL);
-
-        // agujeros
-        agujero1 = new Bola(this, 50, 50, 50, Color.BLACK, true);
-        agujero2 = new Bola(this, 2050, 50, 50, Color.BLACK, true);
-        agujero3 = new Bola(this, 50, 1025, 50, Color.BLACK, true);
-        agujero4 = new Bola(this, 2050, 1025, 50, Color.BLACK, true);
-
-        bolas = new Bola[]{
-                agujero1, agujero2, agujero3, agujero4
-        };
-
-        for (Bola bola : bolas) {
-            actores.add(bola);
-            bola.setup();
-        }
 
         synchronized (actores) {
             for (Sprite actor : actores) {
