@@ -34,6 +34,7 @@ abstract class AppBD : RoomDatabase() {
                     Constantes.NOMBRE_BASE_DATOS
                 )
                     //.addMigrations(MIGRATION_1_2)
+                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 return instance

@@ -1,19 +1,20 @@
 package com.example.viewmodelnavdrawer.ui.gallery
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.viewmodelnavdrawer.modelo.bd.AppBD
 import com.example.viewmodelnavdrawer.modelo.data.Alumno
+import kotlin.collections.ArrayList
 
-class GalleryViewModel() : ViewModel() {
+class GalleryViewModel(application: Application) : AndroidViewModel(application) {
 
     // TODO: Implement the ViewModel
     var mText: MutableLiveData<String>?
     var mNombres: MutableLiveData<ArrayList<String>>?
     var alumno: MutableLiveData<Alumno>?
     var mAlumnos: MutableLiveData<ArrayList<Alumno>>?
-    var daoAlumno = AppBD.getAppDB(Application().applicationContext)!!.daoAlumno()
+    var daoAlumno = AppBD.getAppDB(application)!!.daoAlumno()
 
     init {
         this.mText = MutableLiveData<String>("Este es el fragmento main")

@@ -57,7 +57,7 @@ class GalleryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         galleryViewModel!!.mAlumnos!!.observe(this.viewLifecycleOwner,
-            Observer<java.util.ArrayList<Alumno?>> { alumnos -> // Aquí puedes actualizar la interfaz de usuario con los nuevos datos
+            Observer<java.util.ArrayList<Alumno>> { alumnos -> // Aquí puedes actualizar la interfaz de usuario con los nuevos datos
                 Log.d("MVVM", "" + alumnos.toString())
             })
     }
