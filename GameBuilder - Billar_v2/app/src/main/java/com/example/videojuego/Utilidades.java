@@ -11,10 +11,7 @@ public class Utilidades {
 
     public static boolean colisionCirculos(float x1, float y1, float r1, float x2, float y2, float r2) {
 
-        if ((r1 + r2) <= distancia(x1, y1, x2, y2))
-            return false;
-        else
-            return true;
+        return !((r1 + r2) <= distancia(x1, y1, x2, y2));
 
     }
 

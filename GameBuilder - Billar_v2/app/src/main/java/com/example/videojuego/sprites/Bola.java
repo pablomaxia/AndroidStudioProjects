@@ -114,6 +114,7 @@ public class Bola extends Sprite implements OnColisionListener {
                 velActualY = (float) (cosa * vy2 + sina * vx2);
             }
             if (b.isAgujero()) {
+                recoloca();
                 b.velActualX = 0f;
                 b.velActualY = 0f;
                 if (getColor() == Color.WHITE) {
@@ -132,16 +133,16 @@ public class Bola extends Sprite implements OnColisionListener {
 
         switch (border) {
             case OnColisionListener.TOP:
-                velActualY = -velActualY;
+                velActualY *= -1;
                 break;
             case OnColisionListener.BOTTOM:
-                velActualY = -velActualY;
+                velActualY *= -1;
                 break;
             case OnColisionListener.RIGHT:
-                velActualX = -velActualX;
+                velActualX *= -1;
                 break;
             case OnColisionListener.LEFT:
-                velActualX = -velActualX;
+                velActualX *= -1;
                 break;
             default:
 
@@ -159,8 +160,7 @@ public class Bola extends Sprite implements OnColisionListener {
     }
 
     public void recoloca() {
-        this.centroX *= -1;
-        this.centroY *= -1;
+
     }
 
     public boolean isAgujero() {
