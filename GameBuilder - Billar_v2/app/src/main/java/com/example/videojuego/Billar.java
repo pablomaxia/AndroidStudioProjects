@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.example.videojuego.sprites.Bola;
 import com.example.videojuego.sprites.Sprite;
@@ -98,6 +100,12 @@ public class Billar extends GameView implements OnTouchEventListener {
         for (Sprite actor : actores) {
             if (actor.isVisible())
                 actor.update();
+        }
+        if (actores.size() == 5) {
+            Looper.prepare();
+            Toast.makeText(context, "¡Has ganado!", Toast.LENGTH_SHORT).show();
+            actores.clear();
+            setupGame();
         }
     }
 

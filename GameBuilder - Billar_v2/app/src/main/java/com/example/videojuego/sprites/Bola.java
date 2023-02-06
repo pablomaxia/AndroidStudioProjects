@@ -104,15 +104,20 @@ public class Bola extends Sprite implements OnColisionListener {
                 float ang = (float) Math.atan2(dy, dx);
                 double cosa = Math.cos(ang);
                 double sina = Math.sin(ang);
-                float vx2 = (float) (cosa * b.velActualX + sina * b.velActualY);
+
                 float vy1 = (float) (cosa * b.velActualY - sina * b.velActualX);
                 float vx1 = (float) (cosa * velActualX + sina * velActualY);
+
+                float vx2 = (float) (cosa * b.velActualX + sina * b.velActualY);
                 float vy2 = (float) (cosa * velActualY - sina * velActualX);
+
                 b.velActualX = (float) (cosa * vx1 - sina * vy1);
                 b.velActualY = (float) (cosa * vy1 + sina * vx1);
+
                 velActualX = (float) (cosa * vx2 - sina * vy2);
                 velActualY = (float) (cosa * vy2 + sina * vx2);
-                recoloca();
+
+                if (!b.isAgujero()) b.recoloca();
             }
             if (b.isAgujero()) {
                 b.velActualX = 0f;
@@ -123,6 +128,7 @@ public class Bola extends Sprite implements OnColisionListener {
                 } else {
                     setVisible(false);
                 }
+
             }
 
         }
@@ -161,8 +167,8 @@ public class Bola extends Sprite implements OnColisionListener {
     }
 
     public void recoloca() {
-        centroX -= 5;
-        centroY -= 5;
+        velActualX += 0.5;
+        velActualY += 0.5;
     }
 
     public boolean isAgujero() {
