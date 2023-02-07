@@ -167,8 +167,10 @@ public class Bola extends Sprite implements OnColisionListener {
     }
 
     public void recoloca() {
-        velActualX += 0.5;
-        velActualY += 0.5;
+        velActualX += 0.7;
+        velActualY += 0.7;
+        //       centroX -= 5.5;
+//        centroY -= 5.5;
     }
 
     public boolean isAgujero() {

@@ -74,19 +74,19 @@ public class Billar extends GameView implements OnTouchEventListener {
         bola1.setup();
 
         // agujeros
-        agujero1 = new Bola(this, 50, 50, 50, Color.BLACK, true);
+        agujero1 = new Bola(this, 50, 50, 60, Color.BLACK, true);
         actores.add(agujero1);
         agujero1.setup();
 
-        agujero2 = new Bola(this, 2050, 50, 50, Color.BLACK, true);
+        agujero2 = new Bola(this, 2050, 50, 60, Color.BLACK, true);
         actores.add(agujero2);
         agujero2.setup();
 
-        agujero3 = new Bola(this, 50, 1025, 50, Color.BLACK, true);
+        agujero3 = new Bola(this, 50, 1025, 60, Color.BLACK, true);
         actores.add(agujero3);
         agujero3.setup();
 
-        agujero4 = new Bola(this, 2050, 1025, 50, Color.BLACK, true);
+        agujero4 = new Bola(this, 2050, 1025, 60, Color.BLACK, true);
         actores.add(agujero4);
         agujero4.setup();
 
@@ -102,8 +102,6 @@ public class Billar extends GameView implements OnTouchEventListener {
                 actor.update();
         }
         if (actores.size() == 5) {
-            Looper.prepare();
-            Toast.makeText(context, "¡Has ganado!", Toast.LENGTH_SHORT).show();
             actores.clear();
             setupGame();
         }
