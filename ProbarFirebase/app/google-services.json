@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "624759352602",
+    "project_id": "careful-acumen-377008",
+    "storage_bucket": "careful-acumen-377008.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624759352602:android:dd12b5d223ea178d0110a3",
+        "android_client_info": {
+          "package_name": "com.example.probarfirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624759352602-8qpkvl34eu2soqqhb87fbfrbghtpb8na.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCm5u88Z1rEPLZAFf25FQ3DPQno5bESxAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624759352602-8qpkvl34eu2soqqhb87fbfrbghtpb8na.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
