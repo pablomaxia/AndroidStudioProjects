@@ -48,13 +48,13 @@ public abstract class GameView extends SurfaceView implements Runnable {
     //Guardar los FPS del videojuego
     long FPS;
     private long ultimoProceso = 0;
-    private static int PERIODO_PROCESO = 100;
+    private static final int PERIODO_PROCESO = 100;
     public float factor_mov = 1;
     long ahora, tiempo_transcurrido;
 
     OnTouchEventListener listener;
 
-    public static LinkedList<Sprite> actores = new LinkedList<>();
+    public static final LinkedList<Sprite> actores = new LinkedList<>();
 
     public GameView(Context context, int x, int y) {
         super(context);
@@ -94,7 +94,7 @@ public abstract class GameView extends SurfaceView implements Runnable {
             return;
         }
         tiempo_transcurrido = ahora - ultimoProceso;  //tiempo_transcurrido=1000000-0
-        factor_mov = (tiempo_transcurrido) / PERIODO_PROCESO; //factor_mov=100000 el primero no es realista
+        factor_mov = (tiempo_transcurrido) / Float.intBitsToFloat(PERIODO_PROCESO); //factor_mov=100000 el primero no es realista
         ultimoProceso = ahora;
     }
 
@@ -114,7 +114,6 @@ public abstract class GameView extends SurfaceView implements Runnable {
             e.printStackTrace();
         }
     }
-
 
     public void onFireColision() {
         for (int i = 0; i < actores.size() - 1; i++)
@@ -155,8 +154,9 @@ public abstract class GameView extends SurfaceView implements Runnable {
             case MotionEvent.ACTION_UP:
                 listener.ejecutaActionUp(event);
                 break;
-            case MotionEvent.ACTION_HOVER_MOVE: // todo
+            case MotionEvent.ACTION_MOVE:
                 listener.ejecutaMove(event);
+                break;
         }
         return true;
     }
@@ -164,6 +164,5 @@ public abstract class GameView extends SurfaceView implements Runnable {
     public abstract void dibuja(Canvas canvas);
 
     protected abstract void actualiza();
-
 
 }

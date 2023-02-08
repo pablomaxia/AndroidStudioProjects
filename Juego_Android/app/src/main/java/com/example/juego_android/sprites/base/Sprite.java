@@ -9,15 +9,15 @@ import com.example.juego_android.interfaces.OnColisionListener;
 public abstract class Sprite implements OnColisionListener {
 
     private GameView game;
-    float mXCoord;
-    float mYCoord;
-    float velInicialX;
-    float velInicialY;
-    float velActualX;
-    float velActualY;
-    boolean visible;
+    protected float mXCoord;
+    protected float mYCoord;
+    protected float velInicialX;
+    protected float velInicialY;
+    protected float velActualX;
+    protected float velActualY;
+    protected boolean visible;
     int color;
-    Paint paint;
+    protected Paint paint;
 
 
     public float getmXCoord() {

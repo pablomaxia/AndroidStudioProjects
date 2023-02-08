@@ -1,15 +1,14 @@
 package com.example.juego_android;
 
+import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     GameView juego;
 

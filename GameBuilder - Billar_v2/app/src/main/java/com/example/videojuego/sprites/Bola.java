@@ -128,12 +128,9 @@ public class Bola extends Sprite implements OnColisionListener {
                 } else {
                     setVisible(false);
                 }
-
             }
-
         }
     }
-
 
     @Override
     public void onColisionBorderEvent(int border) {
