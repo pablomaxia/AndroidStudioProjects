@@ -1,5 +1,6 @@
 package com.example.juego_android.interfaces;
 
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 public interface OnTouchEventListener {

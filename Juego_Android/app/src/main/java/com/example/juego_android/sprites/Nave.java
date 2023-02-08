@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 
 import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
+import com.example.juego_android.interfaces.OnColisionListener;
 import com.example.juego_android.sprites.base.Sprite;
 
 public class Nave extends Sprite {
@@ -19,26 +20,52 @@ public class Nave extends Sprite {
         this.y = y;
         this.radio = radio;
         this.color = color;
-        velInicialX = (float) (Math.random() * 20);
-        velInicialY = (float) (Math.random() * 20);
+        velInicialX = 1f;
+        velInicialY = 0f;
         velActualX = velInicialX;
         velActualY = velInicialY;
 
     }
 
     @Override
-    public void onColisionEvent(Sprite s) {
+    public void onFireColisionBorder() {
+        if (this.x - radio < 0)
+            onColisionBorderEvent(OnColisionListener.LEFT);
+        if (this.x + radio > game.getmScreenX())
+            onColisionBorderEvent(OnColisionListener.RIGHT);
+        if (this.x - radio < 0)
+            onColisionBorderEvent(OnColisionListener.TOP);
+        if (this.x + radio > game.getmScreenY())
+            onColisionBorderEvent(OnColisionListener.BOTTOM);
+    }
 
+    @Override
+    public void onColisionEvent(Sprite s) {
+        if (s instanceof Nave) {
+            Nave nave = (Nave) s;
+        }
     }
 
     @Override
     public void onColisionBorderEvent(int border) {
 
-    }
+        switch (border) {
+            case OnColisionListener.TOP:
+                velActualY *= -1;
+                break;
+            case OnColisionListener.BOTTOM:
+                velActualY *= -1;
+                break;
+            case OnColisionListener.RIGHT:
+                velActualX *= -1;
+                break;
+            case OnColisionListener.LEFT:
+                velActualX *= -1;
+                break;
+            default:
 
-    @Override
-    public void onFireColisionBorder() {
-
+                break;
+        }
     }
 
     @Override
@@ -62,18 +89,19 @@ public class Nave extends Sprite {
 
     @Override
     public void update() {
-        //Se actualiza la posicion de la bola según la anterior
+        //Se actualiza la posicion de la nave según la anterior
         velActualX *= rozamiento;
-        //  if (velActualX==0);velActualX=0;
         x += velActualX;
-        velActualY *= rozamiento;
+        /*velActualY *= rozamiento;
         //   if (velActualY==0)velActualY=0;
-        y += velActualY;
+        y += velActualY;*/
         //Log.d("billar",this.getVelActualX()+"----"+this.getVelActualX());
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
         onFireColisionBorder();
     }
+
+    /*SET Y GET*/
 
     @Override
     public Juego getGame() {
