@@ -7,21 +7,21 @@ import com.example.juego_android.game.Juego;
 import com.example.juego_android.interfaces.OnColisionListener;
 import com.example.juego_android.sprites.base.Sprite;
 
-public class Nave extends Sprite {
+public class Obstaculo extends Sprite {
     private Juego game;
     private float x, y, radio;
     private int color;
-    private final float rozamiento = 0.9f;
+    private final float rozamiento = 0.98f;
 
-    public Nave(GameView game, int x, int y, int radio, int color) {
+    public Obstaculo(GameView game, int x, int y, int radio, int color) {
         super(game);
         this.game = (Juego) game;
         this.x = x;
         this.y = y;
         this.radio = radio;
         this.color = color;
-        velInicialX = 1f;
-        velInicialY = 0f;
+        velInicialX = 0f;
+        velInicialY = 1f;
         velActualX = velInicialX;
         velActualY = velInicialY;
 
@@ -29,9 +29,9 @@ public class Nave extends Sprite {
 
     @Override
     public void onFireColisionBorder() {
-        if (this.x - radio - 5 < 0)
+        if (this.x - radio < 0)
             onColisionBorderEvent(OnColisionListener.LEFT);
-        if (this.x + radio + 5 > game.getmScreenX())
+        if (this.x + radio > game.getmScreenX())
             onColisionBorderEvent(OnColisionListener.RIGHT);
         if (this.x - radio < 0)
             onColisionBorderEvent(OnColisionListener.TOP);
@@ -41,8 +41,8 @@ public class Nave extends Sprite {
 
     @Override
     public void onColisionEvent(Sprite s) {
-        if (s instanceof Nave) {
-            Nave nave = (Nave) s;
+        if (s instanceof Obstaculo) {
+            Obstaculo nave = (Obstaculo) s;
         }
     }
 
@@ -90,8 +90,8 @@ public class Nave extends Sprite {
     @Override
     public void update() {
         //Se actualiza la posicion de la nave según la anterior
-        velActualX *= rozamiento;
-        x += velActualX;
+        velActualY *= rozamiento;
+        y += velActualY;
         /*velActualY *= rozamiento;
         //   if (velActualY==0)velActualY=0;
         y += velActualY;*/

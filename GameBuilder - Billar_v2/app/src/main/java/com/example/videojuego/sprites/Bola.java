@@ -84,13 +84,13 @@ public class Bola extends Sprite implements OnColisionListener {
 
     @Override
     public void onFireColisionBorder() {
-        if (this.centroX - radio < 0)
+        if (this.centroX - radio - 36 < 0)
             onColisionBorderEvent(OnColisionListener.LEFT);
-        if (this.centroX + radio > game.getmScreenX())
+        if (this.centroX + radio + 36 > game.getmScreenX())
             onColisionBorderEvent(OnColisionListener.RIGHT);
-        if (this.centroY - radio < 0)
+        if (this.centroY - radio - 36 < 0)
             onColisionBorderEvent(OnColisionListener.TOP);
-        if (this.centroY + radio > game.getmScreenY())
+        if (this.centroY + radio + 36 > game.getmScreenY())
             onColisionBorderEvent(OnColisionListener.BOTTOM);
     }
 
@@ -166,8 +166,8 @@ public class Bola extends Sprite implements OnColisionListener {
     public void recoloca() {
         velActualX += 0.7;
         velActualY += 0.7;
-        //       centroX -= 5.5;
-//        centroY -= 5.5;
+        centroX += 0.05;
+        centroY += 0.05;
     }
 
     public boolean isAgujero() {

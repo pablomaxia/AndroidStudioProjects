@@ -74,19 +74,19 @@ public class Billar extends GameView implements OnTouchEventListener {
         bola1.setup();
 
         // agujeros
-        agujero1 = new Bola(this, 50, 50, 65, Color.BLACK, true);
+        agujero1 = new Bola(this, 80, 80, 65, Color.BLACK, true);
         actores.add(agujero1);
         agujero1.setup();
 
-        agujero2 = new Bola(this, 2050, 50, 65, Color.BLACK, true);
+        agujero2 = new Bola(this, 2030, 80, 65, Color.BLACK, true);
         actores.add(agujero2);
         agujero2.setup();
 
-        agujero3 = new Bola(this, 50, 1025, 65, Color.BLACK, true);
+        agujero3 = new Bola(this, 80, 1010, 65, Color.BLACK, true);
         actores.add(agujero3);
         agujero3.setup();
 
-        agujero4 = new Bola(this, 2050, 1025, 65, Color.BLACK, true);
+        agujero4 = new Bola(this, 2030, 1010, 65, Color.BLACK, true);
         actores.add(agujero4);
         agujero4.setup();
 
@@ -103,6 +103,7 @@ public class Billar extends GameView implements OnTouchEventListener {
         }
         if (actores.size() == 5) {
             actores.clear();
+            this.puntuacion++;
             setupGame();
         }
     }
@@ -115,7 +116,7 @@ public class Billar extends GameView implements OnTouchEventListener {
 
         // borde
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(12);
+        paint.setStrokeWidth(36);
         paint.setColor(Color.rgb(85, 44, 22)); // MARRÓN
 
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
@@ -130,7 +131,7 @@ public class Billar extends GameView implements OnTouchEventListener {
         }
         //dibujamos puntuacion y vidas
         paint.setTextSize(30);
-        canvas.drawText("Factor_mov: " + this.factor_mov + "  Vidas: " + actores.size(), 10, 50, paint);
+        canvas.drawText("Victorias: " + this.puntuacion + "  Bolas: " + actores.size(), 10, 50, paint);
         paint.setTextSize(10);
         if (estaDentro) {
             paint.setColor(Color.WHITE);
