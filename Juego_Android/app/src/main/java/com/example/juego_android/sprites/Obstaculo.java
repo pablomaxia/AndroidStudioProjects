@@ -42,7 +42,22 @@ public class Obstaculo extends Sprite {
     @Override
     public void onColisionEvent(Sprite s) {
         if (s instanceof Obstaculo) {
-            Obstaculo nave = (Obstaculo) s;
+            Obstaculo obs = (Obstaculo) s;
+            /*float dy = (float) (obs.y - y);
+            float dx = (float) (obs.x - x);
+            float ang = (float) Math.atan2(dy, dx);
+            double cosa = Math.cos(ang);
+            double sina = Math.sin(ang);
+
+            float vy1 = (float) (cosa * obs.velActualY - sina * obs.velActualX);
+            float vx1 = (float) (cosa * velActualX + sina * velActualY);
+
+            float vx2 = (float) (cosa * obs.velActualX + sina * obs.velActualY);
+            float vy2 = (float) (cosa * velActualY - sina * velActualX);
+
+            obs.velActualX = (float) (cosa * vx1 - sina * vy1);
+            obs.velActualY = (float) (cosa * vy1 + sina * vx1);*/
+
         }
     }
 
@@ -70,7 +85,9 @@ public class Obstaculo extends Sprite {
 
     @Override
     public boolean colision(Sprite s) {
-        return false;
+        Obstaculo obs = (Obstaculo) s;
+
+        return obs.getY() == getY();
     }
 
     @Override
@@ -84,7 +101,7 @@ public class Obstaculo extends Sprite {
     @Override
     public void setup() {
         velActualX = 0;
-        velActualY = 0;
+        velActualY = 1;
     }
 
     @Override

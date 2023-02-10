@@ -29,9 +29,9 @@ public class Nave extends Sprite {
 
     @Override
     public void onFireColisionBorder() {
-        if (this.x - radio - 5 < 0)
+        if (this.x - radio - 15 < 0)
             onColisionBorderEvent(OnColisionListener.LEFT);
-        if (this.x + radio + 5 > game.getmScreenX())
+        if (this.x + radio + 15 > game.getmScreenX())
             onColisionBorderEvent(OnColisionListener.RIGHT);
         if (this.x - radio < 0)
             onColisionBorderEvent(OnColisionListener.TOP);
@@ -43,6 +43,26 @@ public class Nave extends Sprite {
     public void onColisionEvent(Sprite s) {
         if (s instanceof Nave) {
             Nave nave = (Nave) s;
+
+            /*float dy = (float) (nave.y - y);
+            float dx = (float) (nave.x - x);
+            float ang = (float) Math.atan2(dy, dx);
+            double cosa = Math.cos(ang);
+            double sina = Math.sin(ang);
+
+            float vy1 = (float) (cosa * nave.velActualY - sina * nave.velActualX);
+            float vx1 = (float) (cosa * velActualX + sina * velActualY);
+
+            float vx2 = (float) (cosa * nave.velActualX + sina * nave.velActualY);
+            float vy2 = (float) (cosa * velActualY - sina * velActualX);
+
+            nave.velActualX = (float) (cosa * vx1 - sina * vy1);
+            nave.velActualY = (float) (cosa * vy1 + sina * vx1);
+
+            velActualX = (float) (cosa * vx2 - sina * vy2);
+            velActualY = (float) (cosa * vy2 + sina * vx2);*/
+
+
         }
     }
 
@@ -58,9 +78,11 @@ public class Nave extends Sprite {
                 break;
             case OnColisionListener.RIGHT:
                 velActualX *= -1;
+                x -= 15;
                 break;
             case OnColisionListener.LEFT:
                 velActualX *= -1;
+                x += 15;
                 break;
             default:
 
@@ -70,6 +92,7 @@ public class Nave extends Sprite {
 
     @Override
     public boolean colision(Sprite s) {
+        Nave nave = (Nave) s;
         return false;
     }
 

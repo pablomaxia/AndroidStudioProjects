@@ -29,22 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        Grupo grupo = new Grupo("3A", "3A");
-        db.collection("grupo").add(grupo);
-        db.collection("grupo").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(":::FIREBASE", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w(":::FIREBASE", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+        create(new Grupo("5a","Grupo 5a"));
 
+        readAll();
+
+        update("GRUPO - 3A","uAZ0bfOyYMAHayzoC1tW");
+
+        deleteOne("1A");
     }
 
     private void ejemplo() {
@@ -81,6 +72,62 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Log.w(":::FIREBASE", "Error getting documents.", task.getException());
                         }
+                    }
+                });
+    }
+
+    private void create(Grupo gr) {
+        db.collection("grupo").add(gr); // Create
+    }
+
+    private void readAll() {
+        db.collection("grupo").get() // Read
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(":::FIREBASE", document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.w(":::FIREBASE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void update(String nombre, String id) {
+        db.collection("grupo")// Update
+                .document(id)
+                .update("nombre", nombre)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(":::FIREBASE", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(":::FIREBASE", "Error updating document", e);
+                    }
+                });
+    }
+
+    private void deleteOne(String idGrupo) {
+        db.collection("grupo")// Delete
+                .document(idGrupo)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(":::FIREBASE", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(":::FIREBASE", "Error deleting document", e);
                     }
                 });
     }
