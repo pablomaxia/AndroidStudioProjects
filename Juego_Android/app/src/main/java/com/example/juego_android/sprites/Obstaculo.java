@@ -6,6 +6,8 @@ import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
 import com.example.juego_android.interfaces.OnColisionListener;
 import com.example.juego_android.sprites.base.Sprite;
+import com.example.juego_android.utilidades.Constantes;
+import com.example.juego_android.utilidades.Utilidades;
 
 public class Obstaculo extends Sprite {
     private Juego game;
@@ -21,7 +23,7 @@ public class Obstaculo extends Sprite {
         this.radio = radio;
         this.color = color;
         velInicialX = 0f;
-        velInicialY = 1f;
+        velInicialY = Constantes.GRAVEDAD;
         velActualX = velInicialX;
         velActualY = velInicialY;
 
@@ -85,9 +87,11 @@ public class Obstaculo extends Sprite {
 
     @Override
     public boolean colision(Sprite s) {
-        Obstaculo obs = (Obstaculo) s;
-
-        return obs.getY() == getY();
+        if (s instanceof Nave) {
+            Nave n = (Nave) s;
+            return Utilidades.colisionCirculos(x, y, radio, n.getX(), n.getY(), n.getRadio());
+        }
+        return false;
     }
 
     @Override
@@ -101,18 +105,15 @@ public class Obstaculo extends Sprite {
     @Override
     public void setup() {
         velActualX = 0;
-        velActualY = 1;
+        velActualY = Constantes.GRAVEDAD;
+
     }
 
     @Override
     public void update() {
-        //Se actualiza la posicion de la nave según la anterior
-        velActualY *= rozamiento;
-        y += velActualY;
-        /*velActualY *= rozamiento;
-        //   if (velActualY==0)velActualY=0;
-        y += velActualY;*/
-        //Log.d("billar",this.getVelActualX()+"----"+this.getVelActualX());
+        //velActualY *= rozamiento;
+        velActualY = (int) (Math.random() + 20);
+        y += 1;
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
         onFireColisionBorder();

@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.example.juego_android.constantes.Constantes;
+import com.example.juego_android.utilidades.Constantes;
 import com.example.juego_android.interfaces.OnTouchEventListener;
 import com.example.juego_android.sprites.Nave;
 import com.example.juego_android.sprites.Obstaculo;
@@ -17,11 +17,13 @@ public class Juego extends GameView implements OnTouchEventListener {
     private final int x;
     private final int y;
     //variables del juego
-    public int puntuacion = 0;
-    public int vidas = 3;
+    public static int puntuacion = 0;
+    public static int vidas = 3;
+
     float lineX1, lineY1, lineX2, lineY2;
     boolean estaDentro = false;
     boolean apunta = false;
+
     // Actores del juego
     private Nave nave1;
     private Obstaculo[] obstaculos;
@@ -41,17 +43,27 @@ public class Juego extends GameView implements OnTouchEventListener {
         nave1.setup();
 
         obstaculos = new Obstaculo[]{
-                new Obstaculo(this, 90, 90, 15, Color.WHITE),
-                new Obstaculo(this, 180, 180, 18, Color.WHITE),
-                new Obstaculo(this, 270, 270, 21, Color.WHITE),
+                new Obstaculo(this, 90, 65, 15, Color.WHITE),
+                new Obstaculo(this, 180, 90, 18, Color.WHITE),
+                new Obstaculo(this, 270, 115, 15, Color.WHITE),
+                new Obstaculo(this, 360, 90, 18, Color.WHITE),
+                new Obstaculo(this, 450, 140, 24, Color.WHITE),
+                new Obstaculo(this, 540, 65, 15, Color.WHITE),
+                new Obstaculo(this, 630, 90, 18, Color.WHITE),
+                new Obstaculo(this, 720, 115, 15, Color.WHITE),
+                new Obstaculo(this, 810, 90, 18, Color.WHITE),
+                new Obstaculo(this, 900, 140, 24, Color.WHITE),
         };
 
-        for (int i = 1; i < 4; i++){
-            for (int j = 1; j < obstaculos.length; j++) {
-                actores.add(obstaculos[j]);
-                obstaculos[j].setup();
+        int ale = 0;
+        for (int i = 0; i < obstaculos.length; i++) {
+            ale = (int) (Math.random() + 10);
+            if (i % 2 == 0 || ale == 0) {
+                actores.add(obstaculos[i]);
+                obstaculos[i].setup();
             }
         }
+
     }
 
     //dibuja la pantalla
@@ -73,6 +85,7 @@ public class Juego extends GameView implements OnTouchEventListener {
         canvas.drawText("Puntuacion: " + this.puntuacion + "  Vidas: " + vidas, 10, 50, paint);
         paint.setTextSize(10);
 
+
 /*        if (estaDentro) {
             paint.setColor(Color.WHITE);
             paint.setStrokeWidth(5);
@@ -93,11 +106,16 @@ public class Juego extends GameView implements OnTouchEventListener {
         for (Sprite actor : actores) {
             if (actor.isVisible())
                 actor.update();
+            if (actor instanceof Obstaculo){
+                actor.setup();
+            }
+            if (vidas == 0){
+                break;
+            }
         }
     }
 
     //Responde a los eventos táctiles de la pantalla
-//Responde a los eventos táctiles de la pantalla
     @Override
     public void ejecutaActionDown(MotionEvent event) {
         lineX1 = event.getX();

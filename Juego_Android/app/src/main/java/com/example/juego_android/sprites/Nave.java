@@ -6,6 +6,7 @@ import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
 import com.example.juego_android.interfaces.OnColisionListener;
 import com.example.juego_android.sprites.base.Sprite;
+import com.example.juego_android.utilidades.Utilidades;
 
 public class Nave extends Sprite {
     private Juego game;
@@ -43,6 +44,7 @@ public class Nave extends Sprite {
     public void onColisionEvent(Sprite s) {
         if (s instanceof Nave) {
             Nave nave = (Nave) s;
+            Juego.vidas--;
 
             /*float dy = (float) (nave.y - y);
             float dx = (float) (nave.x - x);
@@ -92,7 +94,10 @@ public class Nave extends Sprite {
 
     @Override
     public boolean colision(Sprite s) {
-        Nave nave = (Nave) s;
+        if (s instanceof Nave) {
+            Nave n = (Nave) s;
+            return Utilidades.colisionCirculos(x, y, radio, n.getX(), n.getY(), n.getRadio());
+        }
         return false;
     }
 

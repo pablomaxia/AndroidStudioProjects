@@ -1,4 +1,4 @@
-package com.example.juego_android.constantes;
+package com.example.juego_android.utilidades;
 
 public class Constantes {
     public static final int ANCHO_PANTALLA = 1000;
@@ -9,8 +9,5 @@ public class Constantes {
 
     //Gravity Value to add gravity effect on the ship
     public static final float GRAVEDAD = -9.8f;
-
-    //Limit the bounds of the ship's speed
-    public static final int VEL_MINIMA = 1;
-    public static final int VEL_MAXIMA = 20;
+    
 }
