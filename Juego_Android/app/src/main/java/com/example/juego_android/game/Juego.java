@@ -5,12 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
-import com.example.juego_android.utilidades.Constantes;
 import com.example.juego_android.interfaces.OnTouchEventListener;
 import com.example.juego_android.sprites.Nave;
 import com.example.juego_android.sprites.Obstaculo;
 import com.example.juego_android.sprites.base.Sprite;
+import com.example.juego_android.utilidades.Constantes;
 
 public class Juego extends GameView implements OnTouchEventListener {
     private final Context context;
@@ -38,6 +39,8 @@ public class Juego extends GameView implements OnTouchEventListener {
     }
 
     public void setupGame() {
+        resetGameVariables();
+
         nave1 = new Nave(this, Constantes.POSICION_X_INICIAL_NAVE, Constantes.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
         actores.add(nave1);
         nave1.setup();
@@ -56,11 +59,14 @@ public class Juego extends GameView implements OnTouchEventListener {
         };
 
         int ale = 0;
-        for (int i = 0; i < obstaculos.length; i++) {
-            ale = (int) (Math.random() + 10);
-            if (i % 2 == 0 || ale == 0) {
-                actores.add(obstaculos[i]);
-                obstaculos[i].setup();
+
+        while (ale != 10) {
+            for (int i = 0; i < obstaculos.length; i++) {
+                ale = (int) (Math.random() + 10);
+                if (i % 2 == 0 || ale == 0) {
+                    actores.add(obstaculos[i]);
+                    obstaculos[i].setup();
+                }
             }
         }
 
@@ -82,7 +88,7 @@ public class Juego extends GameView implements OnTouchEventListener {
         paint.setColor(Color.WHITE);
         //dibujamos puntuacion y vidas
         paint.setTextSize(40);
-        canvas.drawText("Puntuacion: " + this.puntuacion + "  Vidas: " + vidas, 10, 50, paint);
+        canvas.drawText("Puntuacion: " + puntuacion + "  Vidas: " + vidas, 10, 50, paint);
         paint.setTextSize(10);
 
 
@@ -106,11 +112,16 @@ public class Juego extends GameView implements OnTouchEventListener {
         for (Sprite actor : actores) {
             if (actor.isVisible())
                 actor.update();
-            if (actor instanceof Obstaculo){
+            if (actor instanceof Obstaculo) {
                 actor.setup();
             }
-            if (vidas == 0){
-                break;
+            if (vidas == 0) {
+                new Runnable() {
+                    public void run() {
+                        Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
+                    }
+                };
+                setupGame();
             }
         }
     }
@@ -151,4 +162,8 @@ public class Juego extends GameView implements OnTouchEventListener {
 
     }
 
+    private void resetGameVariables() {
+        vidas = 3;
+        puntuacion = 0;
+    }
 }

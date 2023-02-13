@@ -61,6 +61,12 @@ public class Obstaculo extends Sprite {
             obs.velActualY = (float) (cosa * vy1 + sina * vx1);*/
 
         }
+        if (s instanceof Nave) {
+            Nave nave = (Nave) s;
+            setVisible(false);
+            Juego.vidas--;
+
+        }
     }
 
     @Override

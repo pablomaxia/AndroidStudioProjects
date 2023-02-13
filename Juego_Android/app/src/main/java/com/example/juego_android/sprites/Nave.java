@@ -44,7 +44,7 @@ public class Nave extends Sprite {
     public void onColisionEvent(Sprite s) {
         if (s instanceof Nave) {
             Nave nave = (Nave) s;
-            Juego.vidas--;
+            //Juego.vidas--;
 
             /*float dy = (float) (nave.y - y);
             float dx = (float) (nave.x - x);

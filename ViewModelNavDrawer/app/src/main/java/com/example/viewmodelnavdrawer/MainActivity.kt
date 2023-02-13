@@ -2,7 +2,6 @@ package com.example.viewmodelnavdrawer
 
 import android.os.Bundle
 import android.view.Menu
-import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -10,7 +9,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.viewmodelnavdrawer.databinding.ActivityMainBinding
-import com.example.viewmodelnavdrawer.modelo.bd.AppBD
 import com.example.viewmodelnavdrawer.modelo.bd.EscribirBaseDatosTask
 import com.example.viewmodelnavdrawer.modelo.bd.LeerBaseDatosTask
 import com.example.viewmodelnavdrawer.modelo.data.Alumno
@@ -22,8 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var alumno:Alumno
-    private lateinit var alumnos:List<Alumno>
+    private lateinit var alumno: Alumno
+    private lateinit var alumnos: List<Alumno>
 
     private val escribirBaseDatosTask: EscribirBaseDatosTask? = null
     private var leerBaseDatosTask: LeerBaseDatosTask? = null
