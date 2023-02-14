@@ -7,14 +7,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,13 +27,15 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        create(new Grupo("5a","Grupo 5a"));
+        /*create(new Grupo("5a","Grupo 5a"));
 
         readAll();
 
         update("GRUPO - 3A","uAZ0bfOyYMAHayzoC1tW");
 
-        deleteOne("1A");
+        deleteOne("1A");*/
+        insertarMerge();
+
     }
 
     private void ejemplo() {
@@ -48,87 +48,68 @@ public class MainActivity extends AppCompatActivity {
         // Add a new document with a generated ID
         db.collection("users")
                 .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(":::FIREBASE", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(":::FIREBASE", "Error adding document", e);
-                    }
-                });
+                .addOnSuccessListener(documentReference -> Log.d(":::FIREBASE", "DocumentSnapshot added with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w(":::FIREBASE", "Error adding document", e));
         db.collection("users")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(":::FIREBASE", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w(":::FIREBASE", "Error getting documents.", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(":::FIREBASE", document.getId() + " => " + document.getData());
                         }
+                    } else {
+                        Log.w(":::FIREBASE", "Error getting documents.", task.getException());
                     }
                 });
     }
 
     private void create(Grupo gr) {
-        db.collection("grupo").add(gr); // Create
+        //db.collection("grupo").add(gr); // Create
+        db.collection("grupo")
+                .document(gr.getIdGrupo())
+                .set(gr); // Create
     }
 
     private void readAll() {
         db.collection("grupo").get() // Read
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(":::FIREBASE", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w(":::FIREBASE", "Error getting documents.", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(":::FIREBASE", document.getId() + " => " + document.getData());
                         }
+                    } else {
+                        Log.w(":::FIREBASE", "Error getting documents.", task.getException());
                     }
                 });
     }
 
     private void update(String nombre, String id) {
         db.collection("grupo")// Update
-                .document(id)
+                .document(nombre)
                 .update("nombre", nombre)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(":::FIREBASE", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(":::FIREBASE", "Error updating document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(":::FIREBASE", "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w(":::FIREBASE", "Error updating document", e));
     }
 
     private void deleteOne(String idGrupo) {
         db.collection("grupo")// Delete
                 .document(idGrupo)
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(":::FIREBASE", "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(":::FIREBASE", "Error deleting document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(":::FIREBASE", "DocumentSnapshot successfully deleted!"))
+                .addOnFailureListener(e -> Log.w(":::FIREBASE", "Error deleting document", e));
+    }
+
+    private void insertarMerge() {
+        // Update one field, creating the document if it does not already exist.
+        Map<String, Object> data = new HashMap<>();
+        data.put("capital", true);
+        data.put("population", 100_000_000);
+
+        db.collection("cities").document("BJ")
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Log.d(":::FIREBASE", "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w(":::FIREBASE", "Error updating document", e));
+
+
     }
 }

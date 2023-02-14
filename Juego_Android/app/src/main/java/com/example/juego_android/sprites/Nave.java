@@ -21,7 +21,7 @@ public class Nave extends Sprite {
         this.y = y;
         this.radio = radio;
         this.color = color;
-        velInicialX = 1f;
+        velInicialX = 10f;
         velInicialY = 0f;
         velActualX = velInicialX;
         velActualY = velInicialY;

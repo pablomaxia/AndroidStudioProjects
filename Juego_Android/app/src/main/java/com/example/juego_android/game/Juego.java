@@ -3,6 +3,7 @@ package com.example.juego_android.game;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -24,10 +25,22 @@ public class Juego extends GameView implements OnTouchEventListener {
     float lineX1, lineY1, lineX2, lineY2;
     boolean estaDentro = false;
     boolean apunta = false;
+    boolean activo = false;
 
     // Actores del juego
     private Nave nave1;
-    private Obstaculo[] obstaculos;
+    private final Obstaculo[] OBSTACULOS = new Obstaculo[]{
+            new Obstaculo(this, 90, 65, 15, Color.WHITE),
+            new Obstaculo(this, 180, 90, 18, Color.WHITE),
+            new Obstaculo(this, 270, 115, 15, Color.WHITE),
+            new Obstaculo(this, 360, 90, 18, Color.WHITE),
+            new Obstaculo(this, 450, 140, 24, Color.WHITE),
+            new Obstaculo(this, 540, 65, 15, Color.WHITE),
+            new Obstaculo(this, 630, 90, 18, Color.WHITE),
+            new Obstaculo(this, 720, 115, 15, Color.WHITE),
+            new Obstaculo(this, 810, 90, 18, Color.WHITE),
+            new Obstaculo(this, 900, 140, 24, Color.WHITE),
+    };
 
     public Juego(Context context, int x, int y) {
         super(context, x, y);
@@ -45,31 +58,7 @@ public class Juego extends GameView implements OnTouchEventListener {
         actores.add(nave1);
         nave1.setup();
 
-        obstaculos = new Obstaculo[]{
-                new Obstaculo(this, 90, 65, 15, Color.WHITE),
-                new Obstaculo(this, 180, 90, 18, Color.WHITE),
-                new Obstaculo(this, 270, 115, 15, Color.WHITE),
-                new Obstaculo(this, 360, 90, 18, Color.WHITE),
-                new Obstaculo(this, 450, 140, 24, Color.WHITE),
-                new Obstaculo(this, 540, 65, 15, Color.WHITE),
-                new Obstaculo(this, 630, 90, 18, Color.WHITE),
-                new Obstaculo(this, 720, 115, 15, Color.WHITE),
-                new Obstaculo(this, 810, 90, 18, Color.WHITE),
-                new Obstaculo(this, 900, 140, 24, Color.WHITE),
-        };
-
-        int ale = 0;
-
-        while (ale != 10) {
-            for (int i = 0; i < obstaculos.length; i++) {
-                ale = (int) (Math.random() + 10);
-                if (i % 2 == 0 || ale == 0) {
-                    actores.add(obstaculos[i]);
-                    obstaculos[i].setup();
-                }
-            }
-        }
-
+        ponerObstaculos();
     }
 
     //dibuja la pantalla
@@ -108,22 +97,32 @@ public class Juego extends GameView implements OnTouchEventListener {
     //Realiza la lógica del juego, movimientos, física, colisiones, interacciones..etc
     @Override
     protected void actualiza() {
-        //actualizamos los actores
-        for (Sprite actor : actores) {
-            if (actor.isVisible())
-                actor.update();
-            if (actor instanceof Obstaculo) {
-                actor.setup();
+        Runnable r = () -> {
+            ponerObstaculos();
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             if (vidas == 0) {
-                new Runnable() {
-                    public void run() {
-                        Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
-                    }
-                };
+                Looper.prepare();
+                Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                actores.clear();
                 setupGame();
             }
+        };
+        //actualizamos los actores
+        for (Sprite actor : actores) {
+            if (actor.isVisible()) {
+                actor.update();
+            }
         }
+        r.run();
     }
 
     //Responde a los eventos táctiles de la pantalla
@@ -163,7 +162,20 @@ public class Juego extends GameView implements OnTouchEventListener {
     }
 
     private void resetGameVariables() {
-        vidas = 3;
-        puntuacion = 0;
+        vidas = 1;
+        puntuacion = 1_000;
+    }
+
+    private void ponerObstaculos() {
+        int ale = 0;
+        while (ale != 10) {
+            for (int i = 0; i < OBSTACULOS.length; i++) {
+                ale = (int) (Math.random() + 10);
+                if (i % 2 == 0 || ale == 0) {
+                    actores.add(OBSTACULOS[i]);
+                    OBSTACULOS[i].setup();
+                }
+            }
+        }
     }
 }
