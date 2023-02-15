@@ -14,6 +14,8 @@ public class Obstaculo extends Sprite {
     private float x, y, radio;
     private int color;
     private final float rozamiento = 0.98f;
+    private float xInicial = 0;
+    private float yInicial = 0;
 
     public Obstaculo(GameView game, int x, int y, int radio, int color) {
         super(game);
@@ -24,6 +26,8 @@ public class Obstaculo extends Sprite {
         this.color = color;
         velInicialX = 0f;
         velInicialY = Constantes.GRAVEDAD;
+        this.xInicial = x;
+        this.yInicial = y;
         velActualX = velInicialX;
         velActualY = velInicialY;
 
@@ -110,6 +114,9 @@ public class Obstaculo extends Sprite {
 
     @Override
     public void setup() {
+        setVisible(true);
+        x = this.xInicial;
+        y = this.yInicial;
         velActualX = 0;
         velActualY = Constantes.GRAVEDAD;
 
@@ -118,8 +125,8 @@ public class Obstaculo extends Sprite {
     @Override
     public void update() {
         //velActualY *= rozamiento;
-        velActualY = (int) (Math.random() + 20);
-        y += 1;
+        velActualY = (int) (Math.random() + 5);
+        y += velActualY;
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
         onFireColisionBorder();

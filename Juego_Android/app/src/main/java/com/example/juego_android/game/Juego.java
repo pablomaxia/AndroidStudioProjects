@@ -20,7 +20,7 @@ public class Juego extends GameView implements OnTouchEventListener {
     private final int y;
     //variables del juego
     public static int puntuacion = 0;
-    public static int vidas = 3;
+    public static int vidas = 5;
 
     float lineX1, lineY1, lineX2, lineY2;
     boolean estaDentro = false;
@@ -52,13 +52,14 @@ public class Juego extends GameView implements OnTouchEventListener {
     }
 
     public void setupGame() {
-        resetGameVariables();
+
+        ponerObstaculos();
 
         nave1 = new Nave(this, Constantes.POSICION_X_INICIAL_NAVE, Constantes.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
         actores.add(nave1);
         nave1.setup();
 
-        ponerObstaculos();
+        resetGameVariables();
     }
 
     //dibuja la pantalla
@@ -80,49 +81,25 @@ public class Juego extends GameView implements OnTouchEventListener {
         canvas.drawText("Puntuacion: " + puntuacion + "  Vidas: " + vidas, 10, 50, paint);
         paint.setTextSize(10);
 
-
-/*        if (estaDentro) {
-            paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(5);
-            canvas.drawLine(nave1.getX(), nave1.getY(), lineX2, lineY2, paint);
-            if (apunta) {
-                paint.setColor(Color.RED);
-                canvas.drawLine(nave1.getX(), nave1.getY(), (nave1.getX() - lineX2) * 1000, (nave1.getY() - lineY2) * 1000, paint);
-            }
-        }
-*/
-
     }
 
     //Realiza la lógica del juego, movimientos, física, colisiones, interacciones..etc
     @Override
     protected void actualiza() {
-        Runnable r = () -> {
-            ponerObstaculos();
-            try {
-                Thread.sleep(150);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (vidas == 0) {
-                Looper.prepare();
-                Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
-                try {
-                    Thread.sleep(150);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                actores.clear();
-                setupGame();
-            }
-        };
         //actualizamos los actores
         for (Sprite actor : actores) {
             if (actor.isVisible()) {
                 actor.update();
             }
         }
-        r.run();
+        if (vidas == 0) {
+            Looper.prepare();
+            Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
+            actores.clear();
+            setupGame();
+        } else {
+            ponerObstaculos();
+        }
     }
 
     //Responde a los eventos táctiles de la pantalla
@@ -162,19 +139,16 @@ public class Juego extends GameView implements OnTouchEventListener {
     }
 
     private void resetGameVariables() {
-        vidas = 1;
+        vidas = 5;
         puntuacion = 1_000;
     }
 
     private void ponerObstaculos() {
         int ale = 0;
-        while (ale != 10) {
-            for (int i = 0; i < OBSTACULOS.length; i++) {
-                ale = (int) (Math.random() + 10);
-                if (i % 2 == 0 || ale == 0) {
-                    actores.add(OBSTACULOS[i]);
-                    OBSTACULOS[i].setup();
-                }
+        for (int i = 0; i < OBSTACULOS.length; i++) {
+            ale = (int) (Math.random() + 10);
+            if (i % 2 == 0 || ale == 0) {
+                actores.add(OBSTACULOS[i]);
             }
         }
     }
