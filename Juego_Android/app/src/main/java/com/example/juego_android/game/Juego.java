@@ -149,6 +149,12 @@ public class Juego extends GameView implements OnTouchEventListener {
             ale = (int) (Math.random() + 10);
             if (i % 2 == 0 || ale == 0) {
                 actores.add(OBSTACULOS[i]);
+                OBSTACULOS[i].setup();
+                try {
+                    Thread.sleep(75);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
