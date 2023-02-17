@@ -4,9 +4,6 @@ import android.graphics.Canvas;
 
 import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
-import com.example.juego_android.interfaces.OnColisionListener;
-import com.example.juego_android.sprites.base.Sprite;
-import com.example.juego_android.utilidades.Constantes;
 import com.example.juego_android.utilidades.Utilidades;
 
 public class Obstaculo extends Sprite {
@@ -25,7 +22,7 @@ public class Obstaculo extends Sprite {
         this.radio = radio;
         this.color = color;
         velInicialX = 0f;
-        velInicialY = Constantes.GRAVEDAD;
+        velInicialY = Utilidades.GRAVEDAD;
         this.xInicial = x;
         this.yInicial = y;
         velActualX = velInicialX;
@@ -36,13 +33,13 @@ public class Obstaculo extends Sprite {
     @Override
     public void onFireColisionBorder() {
         if (this.x - radio < 0)
-            onColisionBorderEvent(OnColisionListener.LEFT);
+            onColisionBorderEvent(LEFT);
         if (this.x + radio > game.getmScreenX())
-            onColisionBorderEvent(OnColisionListener.RIGHT);
+            onColisionBorderEvent(RIGHT);
         if (this.x - radio < 0)
-            onColisionBorderEvent(OnColisionListener.TOP);
+            onColisionBorderEvent(TOP);
         if (this.x + radio > game.getmScreenY())
-            onColisionBorderEvent(OnColisionListener.BOTTOM);
+            onColisionBorderEvent(BOTTOM);
     }
 
     @Override
@@ -68,7 +65,7 @@ public class Obstaculo extends Sprite {
         if (s instanceof Nave) {
             Nave nave = (Nave) s;
             setVisible(false);
-            Juego.vidas--;
+            Juego.estadisticas.reducirVidas();
 
         }
     }
@@ -77,16 +74,16 @@ public class Obstaculo extends Sprite {
     public void onColisionBorderEvent(int border) {
 
         switch (border) {
-            case OnColisionListener.TOP:
+            case TOP:
                 velActualY *= -1;
                 break;
-            case OnColisionListener.BOTTOM:
+            case BOTTOM:
                 velActualY *= -1;
                 break;
-            case OnColisionListener.RIGHT:
+            case RIGHT:
                 velActualX *= -1;
                 break;
-            case OnColisionListener.LEFT:
+            case LEFT:
                 velActualX *= -1;
                 break;
             default:
@@ -115,15 +112,19 @@ public class Obstaculo extends Sprite {
     @Override
     public void setup() {
         velActualX = 0;
-        velActualY = Constantes.GRAVEDAD;
+        velActualY = Utilidades.GRAVEDAD;
 
     }
 
     @Override
     public void update() {
-        //velActualY *= rozamiento;
-        velActualY = (int) (Math.random() + 1);
+        velActualY = (int) (Math.random() + .1);
         y += velActualY;
+        if (game.getmScreenY() <= y){
+            y = yInicial;
+            int puntuacion = Juego.estadisticas.getPuntuacion() + (int)(radio) * 10;
+            Juego.estadisticas.setPuntuacion(puntuacion);
+        }
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
         onFireColisionBorder();

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "774719755899",
+    "project_id": "basedatosjuego",
+    "storage_bucket": "basedatosjuego.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774719755899:android:96f4d395934e66b7f1b4de",
+        "android_client_info": {
+          "package_name": "com.example.juego_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774719755899-ljs9c7vrmgeg48sfc90cpmacthg2huj3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoZJKg6l7AYRakeLh5Ecx61RqV1c1LPhQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774719755899-ljs9c7vrmgeg48sfc90cpmacthg2huj3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

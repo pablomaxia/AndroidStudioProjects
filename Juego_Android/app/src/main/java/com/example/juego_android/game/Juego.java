@@ -4,23 +4,25 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Looper;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
+import com.example.juego_android.bd.FireBaseBD;
 import com.example.juego_android.interfaces.OnTouchEventListener;
+import com.example.juego_android.modelo.Estadisticas;
 import com.example.juego_android.sprites.Nave;
 import com.example.juego_android.sprites.Obstaculo;
-import com.example.juego_android.sprites.base.Sprite;
-import com.example.juego_android.utilidades.Constantes;
+import com.example.juego_android.sprites.Sprite;
+import com.example.juego_android.utilidades.Utilidades;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Juego extends GameView implements OnTouchEventListener {
     private final Context context;
     private final int x;
     private final int y;
     //variables del juego
-    public static int puntuacion = 0;
-    public static int vidas = 5;
+    public static FireBaseBD fireBaseBD;
+    public static Estadisticas estadisticas = new Estadisticas(Utilidades.TOTAL_VIDAS, Utilidades.PUNTUACION_INICIAL);
 
     float lineX1, lineY1, lineX2, lineY2;
     boolean estaDentro = false;
@@ -49,15 +51,14 @@ public class Juego extends GameView implements OnTouchEventListener {
         this.y = y;
         addOnTouchEventListener(this);
         setupGame();
+        fireBaseBD = FireBaseBD.getInstance();
     }
 
     public void setupGame() {
-
-        ponerObstaculos();
-
-        nave1 = new Nave(this, Constantes.POSICION_X_INICIAL_NAVE, Constantes.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
+        nave1 = new Nave(this, Utilidades.POSICION_X_INICIAL_NAVE, Utilidades.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
         actores.add(nave1);
         nave1.setup();
+        ponerObstaculos();
 
         resetGameVariables();
     }
@@ -68,17 +69,16 @@ public class Juego extends GameView implements OnTouchEventListener {
         //se pinta desde la capa más lejana hasta la más cercana
         canvas.drawColor(Color.argb(255, 20, 20, 20));
 
-
         synchronized (actores) {
             for (Sprite actor : actores) {
                 actor.pinta(canvas);
             }
         }
 
-        paint.setColor(Color.WHITE);
         //dibujamos puntuacion y vidas
+        paint.setColor(Color.WHITE);
         paint.setTextSize(40);
-        canvas.drawText("Puntuacion: " + puntuacion + "  Vidas: " + vidas, 10, 50, paint);
+        canvas.drawText("Puntuacion: " + estadisticas.getPuntuacion() + "  Vidas: " + estadisticas.getVidas(), 10, 50, paint);
         paint.setTextSize(10);
 
     }
@@ -92,7 +92,7 @@ public class Juego extends GameView implements OnTouchEventListener {
                 actor.update();
             }
         }
-        if (vidas == 0) {
+        if (estadisticas.getVidas() == 0) {
             Looper.prepare();
             Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
             actores.clear();
@@ -107,40 +107,40 @@ public class Juego extends GameView implements OnTouchEventListener {
     public void ejecutaActionDown(MotionEvent event) {
         lineX1 = event.getX();
         lineY1 = event.getY();
-        estaDentro = true;
         lineX1 = nave1.getX();
         lineY1 = nave1.getY();
         lineX2 = nave1.getX();
         lineY2 = nave1.getY();
 
-        Log.d("billar", "X: " + lineX1 + " Y: " + lineY1);
+        /*estaDentro = true;
+        Log.d("billar", "X: " + lineX1 + " Y: " + lineY1);*/
 
     }
 
     @Override
     public void ejecutaActionUp(MotionEvent event) {
-        Log.d("billar", "X: " + event.getX() + " Y: " + event.getY());
         lineX2 = event.getX();
         lineY2 = event.getY();
         nave1.setVelActualX((lineX1 - lineX2) / 10);
         nave1.setVelActualY((lineY1 - lineY2) / 10);
-        estaDentro = false;
+        /*Log.d("billar", "X: " + event.getX() + " Y: " + event.getY());*/
+        /*estaDentro = false;
         apunta = false;
-        Log.d("billar", nave1.getVelActualX() + "----" + nave1.getVelActualY());
+        Log.d("billar", nave1.getVelActualX() + "----" + nave1.getVelActualY());*/
     }
 
     @Override
     public void ejecutaMove(MotionEvent event) {
         //Log.d("billar","X: "+event.getX()+" Y: "+event.getY());
-        apunta = true;
+        /*apunta = true;*/
         lineX2 = event.getX();
         lineY2 = event.getY();
 
     }
 
     private void resetGameVariables() {
-        vidas = 5;
-        puntuacion = 1_000;
+        estadisticas.setVidas(Utilidades.TOTAL_VIDAS);
+        estadisticas.setPuntuacion(Utilidades.PUNTUACION_INICIAL);
     }
 
     private void ponerObstaculos() {
@@ -150,11 +150,6 @@ public class Juego extends GameView implements OnTouchEventListener {
             if (i % 2 == 0 || ale == 0) {
                 actores.add(OBSTACULOS[i]);
                 OBSTACULOS[i].setup();
-                try {
-                    Thread.sleep(75);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }

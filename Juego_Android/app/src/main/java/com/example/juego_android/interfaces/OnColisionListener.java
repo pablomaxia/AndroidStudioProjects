@@ -1,6 +1,6 @@
 package com.example.juego_android.interfaces;
 
-import com.example.juego_android.sprites.base.Sprite;
+import com.example.juego_android.sprites.Sprite;
 
 public interface OnColisionListener {
 

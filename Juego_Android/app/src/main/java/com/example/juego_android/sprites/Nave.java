@@ -4,8 +4,6 @@ import android.graphics.Canvas;
 
 import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
-import com.example.juego_android.interfaces.OnColisionListener;
-import com.example.juego_android.sprites.base.Sprite;
 import com.example.juego_android.utilidades.Utilidades;
 
 public class Nave extends Sprite {
@@ -31,58 +29,36 @@ public class Nave extends Sprite {
     @Override
     public void onFireColisionBorder() {
         if (this.x - radio - 15 < 0)
-            onColisionBorderEvent(OnColisionListener.LEFT);
+            onColisionBorderEvent(LEFT);
         if (this.x + radio + 15 > game.getmScreenX())
-            onColisionBorderEvent(OnColisionListener.RIGHT);
-        if (this.x - radio < 0)
-            onColisionBorderEvent(OnColisionListener.TOP);
-        if (this.x + radio > game.getmScreenY())
-            onColisionBorderEvent(OnColisionListener.BOTTOM);
+            onColisionBorderEvent(RIGHT);
+        if (this.x - radio - 15 < 0)
+            onColisionBorderEvent(TOP);
+        if (this.x + radio + 15 > game.getmScreenY())
+            onColisionBorderEvent(BOTTOM);
     }
 
     @Override
     public void onColisionEvent(Sprite s) {
-        if (s instanceof Nave) {
-            Nave nave = (Nave) s;
-            //Juego.vidas--;
-
-            /*float dy = (float) (nave.y - y);
-            float dx = (float) (nave.x - x);
-            float ang = (float) Math.atan2(dy, dx);
-            double cosa = Math.cos(ang);
-            double sina = Math.sin(ang);
-
-            float vy1 = (float) (cosa * nave.velActualY - sina * nave.velActualX);
-            float vx1 = (float) (cosa * velActualX + sina * velActualY);
-
-            float vx2 = (float) (cosa * nave.velActualX + sina * nave.velActualY);
-            float vy2 = (float) (cosa * velActualY - sina * velActualX);
-
-            nave.velActualX = (float) (cosa * vx1 - sina * vy1);
-            nave.velActualY = (float) (cosa * vy1 + sina * vx1);
-
-            velActualX = (float) (cosa * vx2 - sina * vy2);
-            velActualY = (float) (cosa * vy2 + sina * vx2);*/
-
-
-        }
     }
 
     @Override
     public void onColisionBorderEvent(int border) {
 
         switch (border) {
-            case OnColisionListener.TOP:
+            case TOP:
                 velActualY *= -1;
+                y += 15;
                 break;
-            case OnColisionListener.BOTTOM:
+            case BOTTOM:
                 velActualY *= -1;
+                y -= 15;
                 break;
-            case OnColisionListener.RIGHT:
+            case RIGHT:
                 velActualX *= -1;
                 x -= 15;
                 break;
-            case OnColisionListener.LEFT:
+            case LEFT:
                 velActualX *= -1;
                 x += 15;
                 break;
@@ -120,10 +96,6 @@ public class Nave extends Sprite {
         //Se actualiza la posicion de la nave según la anterior
         velActualX *= rozamiento;
         x += velActualX;
-        /*velActualY *= rozamiento;
-        //   if (velActualY==0)velActualY=0;
-        y += velActualY;*/
-        //Log.d("billar",this.getVelActualX()+"----"+this.getVelActualX());
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
         onFireColisionBorder();

@@ -8,7 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.juego_android.interfaces.OnTouchEventListener;
-import com.example.juego_android.sprites.base.Sprite;
+import com.example.juego_android.sprites.Sprite;
 
 import java.util.LinkedList;
 

@@ -1,4 +1,4 @@
-package com.example.juego_android.sprites.base;
+package com.example.juego_android.sprites;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
