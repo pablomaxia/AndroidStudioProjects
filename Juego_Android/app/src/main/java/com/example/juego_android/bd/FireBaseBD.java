@@ -1,9 +1,10 @@
 package com.example.juego_android.bd;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FireBaseBD {
-    private static FireBaseBD instance;
+    private static FireBaseBD instance = null;
     private FirebaseFirestore bd;
 
     private FireBaseBD() {

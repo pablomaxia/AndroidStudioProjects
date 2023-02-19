@@ -29,4 +29,13 @@ public class Estadisticas {
     public void setPuntuacion(int puntuacion) {
         this.puntuacion = puntuacion;
     }
+
+    @Override
+    public String toString() {
+        return "Estadisticas{" +
+                "vidas=" + vidas +
+                ", puntuacion=" + puntuacion +
+                '}';
+    }
+
 }

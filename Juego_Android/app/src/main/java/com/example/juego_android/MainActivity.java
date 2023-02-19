@@ -7,6 +7,7 @@ import android.view.Display;
 
 import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
+import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends Activity {
 
@@ -37,5 +38,12 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         juego.pause();
+        Juego.saveVariables();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Juego.saveVariables();
     }
 }

@@ -12,6 +12,9 @@ public class Utilidades {
     public static final int PUNTUACION_INICIAL = 0;
     public static final int TOTAL_VIDAS = 5;
 
+    public static final String NOMBRE_COLECCION_ESTADISTICAS = "estadisticas";
+    public static final String NOMBRE_DOCUMENTO_ESTADISTICAS = "estadisticas_juego_nave";
+
     public static float distancia(float x1, float y1, float x2, float y2) {
 
         return (float) Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
