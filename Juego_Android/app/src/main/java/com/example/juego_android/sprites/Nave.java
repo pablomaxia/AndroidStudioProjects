@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 
 import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
-import com.example.juego_android.utilidades.Utilidades;
+import com.example.juego_android.utilidades.UtilidadesSprites;
 
 public class Nave extends Sprite {
     private Juego game;
@@ -72,7 +72,7 @@ public class Nave extends Sprite {
     public boolean colision(Sprite s) {
         if (s instanceof Nave) {
             Nave n = (Nave) s;
-            return Utilidades.colisionCirculos(x, y, radio, n.getX(), n.getY(), n.getRadio());
+            return UtilidadesSprites.colisionCirculos(x, y, radio, n.getX(), n.getY(), n.getRadio());
         }
         return false;
     }

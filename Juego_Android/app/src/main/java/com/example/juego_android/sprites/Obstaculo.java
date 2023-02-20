@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 
 import com.example.juego_android.game.GameView;
 import com.example.juego_android.game.Juego;
-import com.example.juego_android.utilidades.Utilidades;
+import com.example.juego_android.utilidades.UtilidadesSprites;
 
 public class Obstaculo extends Sprite {
     private Juego game;
@@ -22,7 +22,7 @@ public class Obstaculo extends Sprite {
         this.radio = radio;
         this.color = color;
         velInicialX = 0f;
-        velInicialY = Utilidades.GRAVEDAD;
+        velInicialY = UtilidadesSprites.GRAVEDAD;
         this.xInicial = x;
         this.yInicial = y;
         velActualX = velInicialX;
@@ -96,7 +96,7 @@ public class Obstaculo extends Sprite {
     public boolean colision(Sprite s) {
         if (s instanceof Nave) {
             Nave n = (Nave) s;
-            return Utilidades.colisionCirculos(x, y, radio, n.getX(), n.getY(), n.getRadio());
+            return UtilidadesSprites.colisionCirculos(x, y, radio, n.getX(), n.getY(), n.getRadio());
         }
         return false;
     }
@@ -112,7 +112,7 @@ public class Obstaculo extends Sprite {
     @Override
     public void setup() {
         velActualX = 0;
-        velActualY = Utilidades.GRAVEDAD;
+        velActualY = UtilidadesSprites.GRAVEDAD;
 
     }
 
@@ -121,9 +121,10 @@ public class Obstaculo extends Sprite {
         velActualY = (int) (Math.random() + .1);
         y += velActualY;
         if (game.getmScreenY() <= y){
-            y = yInicial;
+            //y = yInicial;
             int puntuacion = Juego.estadisticas.getPuntuacion() + (int)(radio) * 10;
             Juego.estadisticas.setPuntuacion(puntuacion);
+            setVisible(false);
         }
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();

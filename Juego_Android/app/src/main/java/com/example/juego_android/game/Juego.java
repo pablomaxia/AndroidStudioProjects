@@ -14,7 +14,8 @@ import com.example.juego_android.modelo.dao.DaoEstadisticas;
 import com.example.juego_android.sprites.Nave;
 import com.example.juego_android.sprites.Obstaculo;
 import com.example.juego_android.sprites.Sprite;
-import com.example.juego_android.utilidades.Utilidades;
+import com.example.juego_android.utilidades.UtilidadesJuego;
+import com.example.juego_android.utilidades.UtilidadesSprites;
 
 public class Juego extends GameView implements OnTouchEventListener {
     private final Context context;
@@ -23,12 +24,9 @@ public class Juego extends GameView implements OnTouchEventListener {
     //variables del juego
     public static FireBaseBD fireBaseBD;
     public static DaoEstadisticas daoEstadisticas = new DaoEstadisticas();
-    public static Estadisticas estadisticas = new Estadisticas(Utilidades.TOTAL_VIDAS, Utilidades.PUNTUACION_INICIAL);
+    public static Estadisticas estadisticas = new Estadisticas();
 
     float lineX1, lineY1, lineX2, lineY2;
-    boolean estaDentro = false;
-    boolean apunta = false;
-    boolean activo = false;
 
     // Actores del juego
     private Nave nave1;
@@ -47,17 +45,17 @@ public class Juego extends GameView implements OnTouchEventListener {
 
     public Juego(Context context, int x, int y) {
         super(context, x, y);
+        fireBaseBD = FireBaseBD.getInstance();
+        loadGameVariables();
         this.context = context;
         this.x = x;
         this.y = y;
-        fireBaseBD = FireBaseBD.getInstance();
         addOnTouchEventListener(this);
         setupGame();
     }
 
     public void setupGame() {
-        loadGameVariables();
-        nave1 = new Nave(this, Utilidades.POSICION_X_INICIAL_NAVE, Utilidades.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
+        nave1 = new Nave(this, UtilidadesSprites.POSICION_X_INICIAL_NAVE, UtilidadesSprites.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
         actores.add(nave1);
         nave1.setup();
         ponerObstaculos();
@@ -88,6 +86,21 @@ public class Juego extends GameView implements OnTouchEventListener {
     //Realiza la lógica del juego, movimientos, física, colisiones, interacciones..etc
     @Override
     protected void actualiza() {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
+                actores.clear();
+                setupGame();
+            }
+        };
+        Runnable obstaculos = new Runnable() {
+            @Override
+            public void run() {
+                ponerObstaculos();
+            }
+        };
         //actualizamos los actores
         for (Sprite actor : actores) {
             if (actor.isVisible()) {
@@ -95,12 +108,9 @@ public class Juego extends GameView implements OnTouchEventListener {
             }
         }
         if (estadisticas.getVidas() == 0) {
-            Looper.prepare();
-            Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
-            actores.clear();
-            setupGame();
+            r.run();
         } else {
-            ponerObstaculos();
+            obstaculos.run();
         }
     }
 
@@ -113,10 +123,6 @@ public class Juego extends GameView implements OnTouchEventListener {
         lineY1 = nave1.getY();
         lineX2 = nave1.getX();
         lineY2 = nave1.getY();
-
-        /*estaDentro = true;
-        Log.d("billar", "X: " + lineX1 + " Y: " + lineY1);*/
-
     }
 
     @Override
@@ -141,35 +147,27 @@ public class Juego extends GameView implements OnTouchEventListener {
     }
 
     private void resetGameVariables() {
-        estadisticas.setVidas(Utilidades.TOTAL_VIDAS);
-        estadisticas.setPuntuacion(Utilidades.PUNTUACION_INICIAL);
+        estadisticas.setVidas(UtilidadesJuego.TOTAL_VIDAS);
+        estadisticas.setPuntuacion(UtilidadesJuego.PUNTUACION_INICIAL);
     }
 
     private void loadGameVariables() {
-        daoEstadisticas.cargarEstadisticas(Utilidades.NOMBRE_COLECCION_ESTADISTICAS, Utilidades.NOMBRE_COLECCION_ESTADISTICAS);
+        daoEstadisticas.cargarEstadisticas(UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
     }
 
     public static void saveVariables() {
-        daoEstadisticas.guardarEstadisticas(Juego.estadisticas, Utilidades.NOMBRE_COLECCION_ESTADISTICAS, Utilidades.NOMBRE_DOCUMENTO_ESTADISTICAS);
+        daoEstadisticas.guardarEstadisticas(Juego.estadisticas, UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
     }
 
     private void ponerObstaculos() {
         int ale = 0;
         for (int i = 0; i < OBSTACULOS.length; i++) {
             ale = (int) (Math.random() + 10);
-            if (i % 2 == 0 || ale == 0) {
+            if (i % 2 == 0 || ale == 0 ) {
                 actores.add(OBSTACULOS[i]);
-                OBSTACULOS[i].setup();
+                if (OBSTACULOS[1].isVisible())
+                    OBSTACULOS[i].setup();
             }
         }
-    }
-
-    /*GET Y SET*/
-    public Estadisticas getEstadisticas() {
-        return estadisticas;
-    }
-
-    public void setEstadisticas(Estadisticas estadisticas) {
-        this.estadisticas = estadisticas;
     }
 }

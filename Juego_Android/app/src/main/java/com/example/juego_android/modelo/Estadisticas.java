@@ -1,8 +1,15 @@
 package com.example.juego_android.modelo;
 
+import com.example.juego_android.utilidades.UtilidadesJuego;
+
 public class Estadisticas {
     private int vidas;
     private int puntuacion;
+
+    public Estadisticas(){
+        this.vidas = UtilidadesJuego.TOTAL_VIDAS;
+        this.puntuacion = UtilidadesJuego.PUNTUACION_INICIAL;
+    }
 
     public Estadisticas(int vidas, int puntuacion) {
         this.vidas = vidas;
