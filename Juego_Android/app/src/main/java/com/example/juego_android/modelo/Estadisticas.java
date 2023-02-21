@@ -5,18 +5,21 @@ import com.example.juego_android.utilidades.UtilidadesJuego;
 public class Estadisticas {
     private int vidas;
     private int puntuacion;
+    private float xNave;
 
-    public Estadisticas(){
+    public Estadisticas() {
         this.vidas = UtilidadesJuego.TOTAL_VIDAS;
         this.puntuacion = UtilidadesJuego.PUNTUACION_INICIAL;
+        this.xNave = 0;
     }
 
-    public Estadisticas(int vidas, int puntuacion) {
+    public Estadisticas(int vidas, int puntuacion, float xNave) {
         this.vidas = vidas;
         this.puntuacion = puntuacion;
+        this.xNave = xNave;
     }
 
-    public void reducirVidas(){
+    public void reducirVidas() {
         this.vidas--;
     }
 
@@ -37,11 +40,20 @@ public class Estadisticas {
         this.puntuacion = puntuacion;
     }
 
+    public float getxNave() {
+        return xNave;
+    }
+
+    public void setxNave(float xNave) {
+        this.xNave = xNave;
+    }
+
     @Override
     public String toString() {
         return "Estadisticas{" +
                 "vidas=" + vidas +
                 ", puntuacion=" + puntuacion +
+                ", xNave=" + xNave +
                 '}';
     }
 

@@ -5,9 +5,8 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 
+import com.example.juego_android.game.EsquivarObstaculos;
 import com.example.juego_android.game.GameView;
-import com.example.juego_android.game.Juego;
-import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends Activity {
 
@@ -22,7 +21,7 @@ public class MainActivity extends Activity {
         Point size = new Point();
         display.getSize(size);
 
-        juego = new Juego(this, size.x, size.y);
+        juego = new EsquivarObstaculos(this, size.x, size.y);
 
         setContentView(juego);
     }
@@ -38,7 +37,7 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         juego.pause();
-        Juego.saveVariables();
+        EsquivarObstaculos.saveVariables();
     }
 
     @Override

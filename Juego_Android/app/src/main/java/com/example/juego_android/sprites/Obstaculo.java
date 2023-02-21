@@ -2,21 +2,21 @@ package com.example.juego_android.sprites;
 
 import android.graphics.Canvas;
 
+import com.example.juego_android.game.EsquivarObstaculos;
 import com.example.juego_android.game.GameView;
-import com.example.juego_android.game.Juego;
 import com.example.juego_android.utilidades.UtilidadesSprites;
 
 public class Obstaculo extends Sprite {
-    private Juego game;
-    private float x, y, radio;
-    private int color;
     private final float rozamiento = 0.98f;
     public float xInicial = 0;
     public float yInicial = 0;
+    private EsquivarObstaculos game;
+    private float x, y, radio;
+    private int color;
 
     public Obstaculo(GameView game, int x, int y, int radio, int color) {
         super(game);
-        this.game = (Juego) game;
+        this.game = (EsquivarObstaculos) game;
         this.x = x;
         this.y = y;
         this.radio = radio;
@@ -44,29 +44,10 @@ public class Obstaculo extends Sprite {
 
     @Override
     public void onColisionEvent(Sprite s) {
-        if (s instanceof Obstaculo) {
-            Obstaculo obs = (Obstaculo) s;
-            /*float dy = (float) (obs.y - y);
-            float dx = (float) (obs.x - x);
-            float ang = (float) Math.atan2(dy, dx);
-            double cosa = Math.cos(ang);
-            double sina = Math.sin(ang);
-
-            float vy1 = (float) (cosa * obs.velActualY - sina * obs.velActualX);
-            float vx1 = (float) (cosa * velActualX + sina * velActualY);
-
-            float vx2 = (float) (cosa * obs.velActualX + sina * obs.velActualY);
-            float vy2 = (float) (cosa * velActualY - sina * velActualX);
-
-            obs.velActualX = (float) (cosa * vx1 - sina * vy1);
-            obs.velActualY = (float) (cosa * vy1 + sina * vx1);*/
-
-        }
         if (s instanceof Nave) {
             Nave nave = (Nave) s;
-            setVisible(false);
-            Juego.estadisticas.reducirVidas();
-
+            EsquivarObstaculos.estadisticas.reducirVidas();
+            this.setVisible(false);
         }
     }
 
@@ -118,13 +99,14 @@ public class Obstaculo extends Sprite {
 
     @Override
     public void update() {
+        //x += (int) (Math.random() + 1) == 0 ? (int) (Math.random() + .1) : (int) (Math.random() - .1);
         velActualY = (int) (Math.random() + .1);
         y += velActualY;
-        if (game.getmScreenY() <= y){
-            //y = yInicial;
-            int puntuacion = Juego.estadisticas.getPuntuacion() + (int)(radio) * 10;
-            Juego.estadisticas.setPuntuacion(puntuacion);
-            setVisible(false);
+        if (game.getmScreenY() <= y) {
+            y = yInicial;
+            int puntuacion = EsquivarObstaculos.estadisticas.getPuntuacion() + (int) (radio) * 10;
+            EsquivarObstaculos.estadisticas.setPuntuacion(puntuacion);
+            radio += 0.5;
         }
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
@@ -134,11 +116,11 @@ public class Obstaculo extends Sprite {
     /*SET Y GET*/
 
     @Override
-    public Juego getGame() {
+    public EsquivarObstaculos getGame() {
         return game;
     }
 
-    public void setGame(Juego game) {
+    public void setGame(EsquivarObstaculos game) {
         this.game = game;
     }
 

@@ -1,66 +1,63 @@
 package com.example.juego_android.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Looper;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.example.juego_android.bd.FireBaseBD;
 import com.example.juego_android.interfaces.OnTouchEventListener;
 import com.example.juego_android.modelo.Estadisticas;
 import com.example.juego_android.modelo.dao.DaoEstadisticas;
+import com.example.juego_android.pantallas.GameOver;
 import com.example.juego_android.sprites.Nave;
 import com.example.juego_android.sprites.Obstaculo;
 import com.example.juego_android.sprites.Sprite;
 import com.example.juego_android.utilidades.UtilidadesJuego;
 import com.example.juego_android.utilidades.UtilidadesSprites;
 
-public class Juego extends GameView implements OnTouchEventListener {
-    private final Context context;
-    private final int x;
-    private final int y;
+public class EsquivarObstaculos extends GameView implements OnTouchEventListener {
     //variables del juego
     public static FireBaseBD fireBaseBD;
     public static DaoEstadisticas daoEstadisticas = new DaoEstadisticas();
     public static Estadisticas estadisticas = new Estadisticas();
-
-    float lineX1, lineY1, lineX2, lineY2;
-
+    private int margenPantalla = 0;
     // Actores del juego
-    private Nave nave1;
+    public static Nave nave1;
+    private final Context context;
+    private final int x;
+    private final int y;
     private final Obstaculo[] OBSTACULOS = new Obstaculo[]{
             new Obstaculo(this, 90, 65, 15, Color.WHITE),
             new Obstaculo(this, 180, 90, 18, Color.WHITE),
-            new Obstaculo(this, 270, 115, 15, Color.WHITE),
-            new Obstaculo(this, 360, 90, 18, Color.WHITE),
             new Obstaculo(this, 450, 140, 24, Color.WHITE),
             new Obstaculo(this, 540, 65, 15, Color.WHITE),
-            new Obstaculo(this, 630, 90, 18, Color.WHITE),
-            new Obstaculo(this, 720, 115, 15, Color.WHITE),
             new Obstaculo(this, 810, 90, 18, Color.WHITE),
             new Obstaculo(this, 900, 140, 24, Color.WHITE),
     };
+    float lineX1, lineY1, lineX2, lineY2;
 
-    public Juego(Context context, int x, int y) {
+    public EsquivarObstaculos(Context context, int x, int y) {
         super(context, x, y);
         fireBaseBD = FireBaseBD.getInstance();
         loadGameVariables();
         this.context = context;
         this.x = x;
         this.y = y;
+        margenPantalla = (int)(0.05 * getmScreenX());
         addOnTouchEventListener(this);
         setupGame();
+    }
+
+    public static void saveVariables() {
+        daoEstadisticas.guardarEstadisticas(EsquivarObstaculos.estadisticas, UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
     }
 
     public void setupGame() {
         nave1 = new Nave(this, UtilidadesSprites.POSICION_X_INICIAL_NAVE, UtilidadesSprites.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
         actores.add(nave1);
         nave1.setup();
-        ponerObstaculos();
-
-        //resetGameVariables();
     }
 
     //dibuja la pantalla
@@ -86,31 +83,21 @@ public class Juego extends GameView implements OnTouchEventListener {
     //Realiza la lógica del juego, movimientos, física, colisiones, interacciones..etc
     @Override
     protected void actualiza() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                Toast.makeText(context, "Has perdido...", Toast.LENGTH_SHORT).show();
-                actores.clear();
-                setupGame();
-            }
-        };
-        Runnable obstaculos = new Runnable() {
-            @Override
-            public void run() {
-                ponerObstaculos();
-            }
-        };
         //actualizamos los actores
         for (Sprite actor : actores) {
             if (actor.isVisible()) {
                 actor.update();
             }
         }
-        if (estadisticas.getVidas() == 0) {
-            r.run();
+        if (estadisticas.getVidas() <= 0) {
+            actores.clear();
+            Intent intent = new Intent(context, GameOver.class);
+            intent.putExtra("puntos", estadisticas.getPuntuacion());
+            context.startActivity(intent);
+//            resetGameVariables();
+//           setupGame();
         } else {
-            obstaculos.run();
+            ponerObstaculos();
         }
     }
 
@@ -118,56 +105,56 @@ public class Juego extends GameView implements OnTouchEventListener {
     @Override
     public void ejecutaActionDown(MotionEvent event) {
         lineX1 = event.getX();
-        lineY1 = event.getY();
+        //lineY1 = event.getY();
         lineX1 = nave1.getX();
-        lineY1 = nave1.getY();
+        //lineY1 = nave1.getY();
         lineX2 = nave1.getX();
-        lineY2 = nave1.getY();
+        //lineY2 = nave1.getY();
     }
 
     @Override
     public void ejecutaActionUp(MotionEvent event) {
         lineX2 = event.getX();
-        lineY2 = event.getY();
-        nave1.setVelActualX((lineX1 - lineX2) / 10);
-        nave1.setVelActualY((lineY1 - lineY2) / 10);
-        /*Log.d("billar", "X: " + event.getX() + " Y: " + event.getY());*/
-        /*estaDentro = false;
-        apunta = false;
-        Log.d("billar", nave1.getVelActualX() + "----" + nave1.getVelActualY());*/
+        //lineY2 = event.getY();
+        nave1.setX(lineX2);
+        //nave1.setVelActualX((lineX1 - lineX2) / 10);
+        //nave1.setVelActualY((lineY1 - lineY2) / 10);
     }
 
     @Override
     public void ejecutaMove(MotionEvent event) {
-        //Log.d("billar","X: "+event.getX()+" Y: "+event.getY());
-        /*apunta = true;*/
         lineX2 = event.getX();
-        lineY2 = event.getY();
+        nave1.setX(lineX2);
 
     }
 
     private void resetGameVariables() {
         estadisticas.setVidas(UtilidadesJuego.TOTAL_VIDAS);
         estadisticas.setPuntuacion(UtilidadesJuego.PUNTUACION_INICIAL);
+        estadisticas.setxNave(UtilidadesSprites.POSICION_X_INICIAL_NAVE);
     }
 
     private void loadGameVariables() {
         daoEstadisticas.cargarEstadisticas(UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
     }
 
-    public static void saveVariables() {
-        daoEstadisticas.guardarEstadisticas(Juego.estadisticas, UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
-    }
-
     private void ponerObstaculos() {
-        int ale = 0;
+        int ale = (int) (Math.random() + 10);
         for (int i = 0; i < OBSTACULOS.length; i++) {
-            ale = (int) (Math.random() + 10);
-            if (i % 2 == 0 || ale == 0 ) {
+            if (ale != i) {
                 actores.add(OBSTACULOS[i]);
-                if (OBSTACULOS[1].isVisible())
-                    OBSTACULOS[i].setup();
+                OBSTACULOS[i].setup();
             }
         }
     }
+
+    /*SET Y GET*/
+    public int getMargenPantalla() {
+        return margenPantalla;
+    }
+
+    public void setMargenPantalla(int margenPantalla) {
+        this.margenPantalla = margenPantalla;
+    }
+
 }

@@ -2,23 +2,24 @@ package com.example.juego_android.sprites;
 
 import android.graphics.Canvas;
 
+import com.example.juego_android.game.EsquivarObstaculos;
 import com.example.juego_android.game.GameView;
-import com.example.juego_android.game.Juego;
 import com.example.juego_android.utilidades.UtilidadesSprites;
 
 public class Nave extends Sprite {
-    private Juego game;
+    private final float rozamiento = 0.9f;
+    private EsquivarObstaculos game;
     private float x, y, radio;
     private int color;
-    private final float rozamiento = 0.9f;
 
     public Nave(GameView game, int x, int y, int radio, int color) {
         super(game);
-        this.game = (Juego) game;
+        this.game = (EsquivarObstaculos) game;
         this.x = x;
         this.y = y;
         this.radio = radio;
         this.color = color;
+        EsquivarObstaculos.estadisticas.setxNave(x);
         velInicialX = 10f;
         velInicialY = 0f;
         velActualX = velInicialX;
@@ -28,18 +29,22 @@ public class Nave extends Sprite {
 
     @Override
     public void onFireColisionBorder() {
-        if (this.x - radio - 15 < 0)
+        if (this.x - radio - game.getMargenPantalla() < 0)
             onColisionBorderEvent(LEFT);
-        if (this.x + radio + 15 > game.getmScreenX())
+        if (this.x + radio + game.getMargenPantalla() > game.getmScreenX())
             onColisionBorderEvent(RIGHT);
-        if (this.x - radio - 15 < 0)
+        if (this.x - radio - game.getMargenPantalla() < 0)
             onColisionBorderEvent(TOP);
-        if (this.x + radio + 15 > game.getmScreenY())
+        if (this.x + radio + game.getMargenPantalla() > game.getmScreenY())
             onColisionBorderEvent(BOTTOM);
     }
 
     @Override
     public void onColisionEvent(Sprite s) {
+        if (s instanceof Obstaculo) {
+            Obstaculo obs = (Obstaculo) s;
+            obs.setVisible(false);
+        }
     }
 
     @Override
@@ -48,19 +53,17 @@ public class Nave extends Sprite {
         switch (border) {
             case TOP:
                 velActualY *= -1;
-                y += 15;
                 break;
             case BOTTOM:
                 velActualY *= -1;
-                y -= 15;
                 break;
             case RIGHT:
                 velActualX *= -1;
-                x -= 15;
+                x -= game.getMargenPantalla();
                 break;
             case LEFT:
                 velActualX *= -1;
-                x += 15;
+                x += game.getMargenPantalla();
                 break;
             default:
 
@@ -70,9 +73,9 @@ public class Nave extends Sprite {
 
     @Override
     public boolean colision(Sprite s) {
-        if (s instanceof Nave) {
-            Nave n = (Nave) s;
-            return UtilidadesSprites.colisionCirculos(x, y, radio, n.getX(), n.getY(), n.getRadio());
+        if (s instanceof Obstaculo) {
+            Obstaculo obs = (Obstaculo) s;
+            return UtilidadesSprites.colisionCirculos(x, y, radio, obs.getX(), obs.getY(), obs.getRadio());
         }
         return false;
     }
@@ -96,6 +99,7 @@ public class Nave extends Sprite {
         //Se actualiza la posicion de la nave según la anterior
         velActualX *= rozamiento;
         x += velActualX;
+        EsquivarObstaculos.estadisticas.setxNave(x);
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
         onFireColisionBorder();
@@ -104,11 +108,11 @@ public class Nave extends Sprite {
     /*SET Y GET*/
 
     @Override
-    public Juego getGame() {
+    public EsquivarObstaculos getGame() {
         return game;
     }
 
-    public void setGame(Juego game) {
+    public void setGame(EsquivarObstaculos game) {
         this.game = game;
     }
 

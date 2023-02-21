@@ -14,20 +14,36 @@ import java.util.LinkedList;
 
 public abstract class GameView extends SurfaceView implements Runnable {
 
+    public static final LinkedList<Sprite> actores = new LinkedList<>();
+    private static final int PERIODO_PROCESO = 100;
+    //Variable para saber si el juego está pausado
+    public boolean pausado = false;
+    //Canvas y pintura del dibujo
+    public Canvas canvas;
+    public Paint paint;
+    public float factor_mov = 1;
+    //variable que se debe conocer dentro y fuera del hilo (volatile)
+    protected volatile boolean enEjecucion;
     //hilo para realizar el bucle del juego
     Thread hilo = null;
     //superfice general para dibujar en ella
     SurfaceHolder mSurfaceHolder;
-    //variable que se debe conocer dentro y fuera del hilo (volatile)
-    protected volatile boolean enEjecucion;
-    //Variable para saber si el juego está pausado
-    public boolean pausado = false;
-
-    //Canvas y pintura del dibujo
-    public Canvas canvas;
-    public Paint paint;
+    //Guardar los FPS del videojuego
+    long FPS;
+    long ahora, tiempo_transcurrido;
+    OnTouchEventListener listener;
     //Tamaño de la pantalla en píxeles
     private int mScreenX, mScreenY;
+    private long ultimoProceso = 0;
+    public GameView(Context context, int x, int y) {
+        super(context);
+        //inicializar tamaño de pantalla
+        mScreenX = x;
+        mScreenY = y;
+        //inicializar objetos de dibujo
+        mSurfaceHolder = this.getHolder();
+        paint = new Paint();
+    }
 
     public int getmScreenX() {
         return mScreenX;
@@ -43,27 +59,6 @@ public abstract class GameView extends SurfaceView implements Runnable {
 
     public void setmScreenY(int mScreenY) {
         this.mScreenY = mScreenY;
-    }
-
-    //Guardar los FPS del videojuego
-    long FPS;
-    private long ultimoProceso = 0;
-    private static final int PERIODO_PROCESO = 100;
-    public float factor_mov = 1;
-    long ahora, tiempo_transcurrido;
-
-    OnTouchEventListener listener;
-
-    public static final LinkedList<Sprite> actores = new LinkedList<>();
-
-    public GameView(Context context, int x, int y) {
-        super(context);
-        //inicializar tamaño de pantalla
-        mScreenX = x;
-        mScreenY = y;
-        //inicializar objetos de dibujo
-        mSurfaceHolder = this.getHolder();
-        paint = new Paint();
     }
 
     public void addOnTouchEventListener(OnTouchEventListener listener) {

@@ -8,7 +8,6 @@ import com.example.juego_android.interfaces.OnColisionListener;
 
 public abstract class Sprite implements OnColisionListener {
 
-    private GameView game;
     protected float mXCoord;
     protected float mYCoord;
     protected float velInicialX;
@@ -16,9 +15,16 @@ public abstract class Sprite implements OnColisionListener {
     protected float velActualX;
     protected float velActualY;
     protected boolean visible;
-    int color;
     protected Paint paint;
+    int color;
+    private GameView game;
 
+
+    public Sprite(GameView game) {
+        this.game = game;
+        visible = true;
+        paint = new Paint();
+    }
 
     public float getmXCoord() {
         return mXCoord;
@@ -68,10 +74,6 @@ public abstract class Sprite implements OnColisionListener {
         this.velActualY = velActualY;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
     public int getColor() {
         return color;
     }
@@ -88,14 +90,12 @@ public abstract class Sprite implements OnColisionListener {
         this.game = game;
     }
 
-    public Sprite(GameView game) {
-        this.game = game;
-        visible = true;
-        paint = new Paint();
-    }
-
     public boolean isVisible() {
         return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public void onFireColisionSprite() {
