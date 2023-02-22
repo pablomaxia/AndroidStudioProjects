@@ -1,5 +1,7 @@
 package com.example.juego_android.game;
 
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -45,7 +47,7 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
         this.context = context;
         this.x = x;
         this.y = y;
-        margenPantalla = (int)(0.05 * getmScreenX());
+        margenPantalla = (int) (UtilidadesJuego.PORCENTAJE_MARGEN_PANTALLA * getmScreenX());
         addOnTouchEventListener(this);
         setupGame();
     }
@@ -90,12 +92,11 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
             }
         }
         if (estadisticas.getVidas() <= 0) {
-            actores.clear();
             Intent intent = new Intent(context, GameOver.class);
             intent.putExtra("puntos", estadisticas.getPuntuacion());
+            intent.putExtra("juego", (CharSequence) this);
             context.startActivity(intent);
-//            resetGameVariables();
-//           setupGame();
+            ((Activity) context).finish(); // hay que hacer el casting para que no de error.
         } else {
             ponerObstaculos();
         }
@@ -128,7 +129,8 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
 
     }
 
-    private void resetGameVariables() {
+    public void resetGameVariables() {
+        actores.clear();
         estadisticas.setVidas(UtilidadesJuego.TOTAL_VIDAS);
         estadisticas.setPuntuacion(UtilidadesJuego.PUNTUACION_INICIAL);
         estadisticas.setxNave(UtilidadesSprites.POSICION_X_INICIAL_NAVE);

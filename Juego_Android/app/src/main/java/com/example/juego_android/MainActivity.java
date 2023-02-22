@@ -21,11 +21,10 @@ public class MainActivity extends Activity {
         Point size = new Point();
         display.getSize(size);
 
-        juego = new EsquivarObstaculos(this, size.x, size.y);
+        juego = new EsquivarObstaculos(MainActivity.this, size.x, size.y);
 
         setContentView(juego);
     }
-
 
     @Override
     protected void onResume() {
