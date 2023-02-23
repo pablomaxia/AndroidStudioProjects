@@ -19,12 +19,15 @@ import com.example.juego_android.sprites.Sprite;
 import com.example.juego_android.utilidades.UtilidadesJuego;
 import com.example.juego_android.utilidades.UtilidadesSprites;
 
+import java.io.Serializable;
+
 public class EsquivarObstaculos extends GameView implements OnTouchEventListener {
     //variables del juego
     public static FireBaseBD fireBaseBD;
     public static DaoEstadisticas daoEstadisticas = new DaoEstadisticas();
     public static Estadisticas estadisticas = new Estadisticas();
     private int margenPantalla = 0;
+
     // Actores del juego
     public static Nave nave1;
     private final Context context;
@@ -94,7 +97,7 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
         if (estadisticas.getVidas() <= 0) {
             Intent intent = new Intent(context, GameOver.class);
             intent.putExtra("puntos", estadisticas.getPuntuacion());
-            intent.putExtra("juego", (CharSequence) this);
+            //intent.putExtra("juego", this);
             context.startActivity(intent);
             ((Activity) context).finish(); // hay que hacer el casting para que no de error.
         } else {

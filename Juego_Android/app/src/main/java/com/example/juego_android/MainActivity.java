@@ -10,7 +10,7 @@ import com.example.juego_android.game.GameView;
 
 public class MainActivity extends Activity {
 
-    GameView juego;
+    public static GameView juego;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

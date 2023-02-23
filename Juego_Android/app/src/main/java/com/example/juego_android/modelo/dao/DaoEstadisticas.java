@@ -37,6 +37,7 @@ public class DaoEstadisticas implements IDaoEstadisticas {
                         EsquivarObstaculos.estadisticas.setVidas(est.getVidas());
                         EsquivarObstaculos.estadisticas.setPuntuacion(est.getPuntuacion());
                         EsquivarObstaculos.nave1.setX(est.getxNave());
+                        EsquivarObstaculos.estadisticas.setPuntuacionMaxima(est.getPuntuacionMaxima());
                         Log.d(":::FIREBASE", est.toString());
                     } else {
                         Log.d(":::FIREBASE", "Estadísticas nulas");

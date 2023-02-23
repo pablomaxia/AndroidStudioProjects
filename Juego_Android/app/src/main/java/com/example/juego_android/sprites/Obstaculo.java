@@ -106,6 +106,8 @@ public class Obstaculo extends Sprite {
             y = yInicial;
             int puntuacion = EsquivarObstaculos.estadisticas.getPuntuacion() + (int) (radio) * 10;
             EsquivarObstaculos.estadisticas.setPuntuacion(puntuacion);
+            if (puntuacion > EsquivarObstaculos.estadisticas.getPuntuacionMaxima())
+                EsquivarObstaculos.estadisticas.setPuntuacionMaxima(puntuacion);
             radio += 0.5;
         }
         //Comprobamos colisiones con los bordes y entre los actores

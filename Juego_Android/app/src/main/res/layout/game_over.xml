@@ -44,6 +44,19 @@
             android:text="Puntos: "
             android:textColor="#330022"
             android:textSize="40sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Puntuación Máxima: "
+            android:textColor="#330022"
+            android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvMaxPoints"
+            android:text="Puntos: "
+            android:textColor="#330022"
+            android:textSize="40sp" />
     </LinearLayout>
 
 </LinearLayout>
