@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         juego.pause();
-        EsquivarObstaculos.saveVariables();
+        EsquivarObstaculos.guardarVariables();
     }
 
     @Override

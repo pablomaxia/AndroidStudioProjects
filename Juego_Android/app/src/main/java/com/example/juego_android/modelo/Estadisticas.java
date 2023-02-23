@@ -12,14 +12,20 @@ public class Estadisticas {
         this.vidas = UtilidadesJuego.TOTAL_VIDAS;
         this.puntuacion = UtilidadesJuego.PUNTUACION_INICIAL;
         this.xNave = 0;
-        this.puntuacion = UtilidadesJuego.PUNTUACION_INICIAL;
+        this.puntuacionMaxima = UtilidadesJuego.PUNTUACION_INICIAL;
+    }
+
+    public Estadisticas(int vidas, int puntuacion, float xNave) {
+        this.vidas = vidas;
+        this.puntuacion = puntuacion;
+        this.xNave = xNave;
     }
 
     public Estadisticas(int vidas, int puntuacion, float xNave, int puntuacionMaxima) {
         this.vidas = vidas;
         this.puntuacion = puntuacion;
         this.xNave = xNave;
-        this.puntuacion = puntuacionMaxima;
+        this.puntuacionMaxima = puntuacionMaxima;
     }
 
     public void reducirVidas() {

@@ -1,25 +1,22 @@
 package com.example.juego_android.game;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Looper;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.example.juego_android.bd.FireBaseBD;
 import com.example.juego_android.interfaces.OnTouchEventListener;
 import com.example.juego_android.modelo.Estadisticas;
 import com.example.juego_android.modelo.dao.DaoEstadisticas;
-import com.example.juego_android.pantallas.GameOver;
 import com.example.juego_android.sprites.Nave;
 import com.example.juego_android.sprites.Obstaculo;
 import com.example.juego_android.sprites.Sprite;
 import com.example.juego_android.utilidades.UtilidadesJuego;
 import com.example.juego_android.utilidades.UtilidadesSprites;
-
-import java.io.Serializable;
 
 public class EsquivarObstaculos extends GameView implements OnTouchEventListener {
     //variables del juego
@@ -34,19 +31,19 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
     private final int x;
     private final int y;
     private final Obstaculo[] OBSTACULOS = new Obstaculo[]{
-            new Obstaculo(this, 90, 65, 15, Color.WHITE),
-            new Obstaculo(this, 180, 90, 18, Color.WHITE),
-            new Obstaculo(this, 450, 140, 24, Color.WHITE),
-            new Obstaculo(this, 540, 65, 15, Color.WHITE),
-            new Obstaculo(this, 810, 90, 18, Color.WHITE),
-            new Obstaculo(this, 900, 140, 24, Color.WHITE),
+            new Obstaculo(this, 90, 5, 15, Color.WHITE),
+            new Obstaculo(this, 180, 5, 18, Color.WHITE),
+            new Obstaculo(this, 450, 5, 24, Color.WHITE),
+            new Obstaculo(this, 540, 5, 15, Color.WHITE),
+            new Obstaculo(this, 810, 5, 18, Color.WHITE),
+            new Obstaculo(this, 900, 5, 24, Color.WHITE),
     };
     float lineX1, lineY1, lineX2, lineY2;
 
     public EsquivarObstaculos(Context context, int x, int y) {
         super(context, x, y);
         fireBaseBD = FireBaseBD.getInstance();
-        loadGameVariables();
+        cargarEstadisticas();
         this.context = context;
         this.x = x;
         this.y = y;
@@ -55,14 +52,11 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
         setupGame();
     }
 
-    public static void saveVariables() {
-        daoEstadisticas.guardarEstadisticas(EsquivarObstaculos.estadisticas, UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
-    }
-
     public void setupGame() {
         nave1 = new Nave(this, UtilidadesSprites.POSICION_X_INICIAL_NAVE, UtilidadesSprites.POSICION_Y_INICIAL_NAVE, 50, Color.WHITE);
         actores.add(nave1);
         nave1.setup();
+        ponerObstaculos();
     }
 
     //dibuja la pantalla
@@ -80,7 +74,7 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
         //dibujamos puntuacion y vidas
         paint.setColor(Color.WHITE);
         paint.setTextSize(40);
-        canvas.drawText("Puntuacion: " + estadisticas.getPuntuacion() + "  Vidas: " + estadisticas.getVidas(), 10, 50, paint);
+        canvas.drawText("Puntuación Máxima: " + estadisticas.getPuntuacionMaxima() + " Puntuación: " + estadisticas.getPuntuacion() + "  Vidas: " + estadisticas.getVidas(), 10, 50, paint);
         paint.setTextSize(10);
 
     }
@@ -94,14 +88,23 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
                 actor.update();
             }
         }
-        if (estadisticas.getVidas() <= 0) {
-            Intent intent = new Intent(context, GameOver.class);
-            intent.putExtra("puntos", estadisticas.getPuntuacion());
-            //intent.putExtra("juego", this);
-            context.startActivity(intent);
-            ((Activity) context).finish(); // hay que hacer el casting para que no de error.
-        } else {
-            ponerObstaculos();
+        if (estadisticas.getVidas() == 0) {
+            pausado = true;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            actores.clear();
+            reiniciarEstadisticas();
+            guardarVariables();
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            setupGame();
+            pausado = false;
         }
     }
 
@@ -129,27 +132,26 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
     public void ejecutaMove(MotionEvent event) {
         lineX2 = event.getX();
         nave1.setX(lineX2);
-
     }
 
-    public void resetGameVariables() {
-        actores.clear();
+    public void reiniciarEstadisticas() {
         estadisticas.setVidas(UtilidadesJuego.TOTAL_VIDAS);
         estadisticas.setPuntuacion(UtilidadesJuego.PUNTUACION_INICIAL);
         estadisticas.setxNave(UtilidadesSprites.POSICION_X_INICIAL_NAVE);
     }
 
-    private void loadGameVariables() {
+    public static void guardarVariables() {
+        daoEstadisticas.guardarEstadisticas(EsquivarObstaculos.estadisticas, UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
+    }
+
+    public static void cargarEstadisticas() {
         daoEstadisticas.cargarEstadisticas(UtilidadesJuego.NOMBRE_COLECCION_ESTADISTICAS, UtilidadesJuego.NOMBRE_DOCUMENTO_ESTADISTICAS);
     }
 
     private void ponerObstaculos() {
-        int ale = (int) (Math.random() + 10);
-        for (int i = 0; i < OBSTACULOS.length; i++) {
-            if (ale != i) {
-                actores.add(OBSTACULOS[i]);
-                OBSTACULOS[i].setup();
-            }
+        for (Obstaculo obstaculo : OBSTACULOS) {
+            actores.add(obstaculo);
+            obstaculo.setup();
         }
     }
 

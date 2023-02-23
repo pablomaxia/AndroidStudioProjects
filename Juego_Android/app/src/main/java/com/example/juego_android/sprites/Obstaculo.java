@@ -47,7 +47,8 @@ public class Obstaculo extends Sprite {
         if (s instanceof Nave) {
             Nave nave = (Nave) s;
             EsquivarObstaculos.estadisticas.reducirVidas();
-            this.setVisible(false);
+            y = yInicial;
+            radio += 5;
         }
     }
 
@@ -100,15 +101,16 @@ public class Obstaculo extends Sprite {
     @Override
     public void update() {
         //x += (int) (Math.random() + 1) == 0 ? (int) (Math.random() + .1) : (int) (Math.random() - .1);
-        velActualY = (int) (Math.random() + .1);
+        velActualY = (int) (Math.random() * 10) + 1;
         y += velActualY;
         if (game.getmScreenY() <= y) {
             y = yInicial;
+            x += (int) (Math.random() * 10) + 1;
             int puntuacion = EsquivarObstaculos.estadisticas.getPuntuacion() + (int) (radio) * 10;
             EsquivarObstaculos.estadisticas.setPuntuacion(puntuacion);
             if (puntuacion > EsquivarObstaculos.estadisticas.getPuntuacionMaxima())
                 EsquivarObstaculos.estadisticas.setPuntuacionMaxima(puntuacion);
-            radio += 0.5;
+            radio += 1.5;
         }
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();

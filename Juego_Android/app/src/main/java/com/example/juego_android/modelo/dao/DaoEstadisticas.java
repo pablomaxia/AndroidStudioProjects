@@ -12,7 +12,6 @@ import com.google.firebase.firestore.SetOptions;
 
 public class DaoEstadisticas implements IDaoEstadisticas {
     private FireBaseBD fireBaseBD;
-
     @Override
     public void guardarEstadisticas(Estadisticas estadisticas, String nombreColeccion, String nombreDocumento) {
         FirebaseFirestore firestore = EsquivarObstaculos.fireBaseBD.getBd();
@@ -27,7 +26,6 @@ public class DaoEstadisticas implements IDaoEstadisticas {
     public void cargarEstadisticas(String nombreColeccion, String nombreDocumento) {
         FirebaseFirestore firestore = EsquivarObstaculos.fireBaseBD.getBd();
         DocumentReference documentReference = firestore.collection(nombreColeccion).document(nombreDocumento);
-
         documentReference.get()
                 .addOnSuccessListener((documentSnapshot) -> {
                     Log.d(":::FIREBASE", "DocumentSnapshot successfully read!");
