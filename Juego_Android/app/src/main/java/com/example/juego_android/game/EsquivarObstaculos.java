@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -31,12 +32,12 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
     private final int x;
     private final int y;
     private final Obstaculo[] OBSTACULOS = new Obstaculo[]{
-            new Obstaculo(this, 90, 5, 15, Color.WHITE),
-            new Obstaculo(this, 180, 5, 18, Color.WHITE),
-            new Obstaculo(this, 450, 5, 24, Color.WHITE),
-            new Obstaculo(this, 540, 5, 15, Color.WHITE),
-            new Obstaculo(this, 810, 5, 18, Color.WHITE),
-            new Obstaculo(this, 900, 5, 24, Color.WHITE),
+            new Obstaculo(this, 180, 10, 15, Color.WHITE),
+            new Obstaculo(this, 360, 10, 18, Color.RED),
+            new Obstaculo(this, 480, 10, 24, Color.BLUE),
+            new Obstaculo(this, 560, 10, 15, Color.WHITE),
+            new Obstaculo(this, 740, 10, 18, Color.RED),
+            new Obstaculo(this, 920, 10, 24, Color.BLUE),
     };
     float lineX1, lineY1, lineX2, lineY2;
 
@@ -74,7 +75,7 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
         //dibujamos puntuacion y vidas
         paint.setColor(Color.WHITE);
         paint.setTextSize(40);
-        canvas.drawText("Puntuación Máxima: " + estadisticas.getPuntuacionMaxima() + " Puntuación: " + estadisticas.getPuntuacion() + "  Vidas: " + estadisticas.getVidas(), 10, 50, paint);
+        canvas.drawText("Puntuación Máxima: " + estadisticas.getPuntuacionMaxima() + " Puntos: " + estadisticas.getPuntuacion() + "  Vidas: " + estadisticas.getVidas(), 10, 50, paint);
         paint.setTextSize(10);
 
     }
@@ -112,20 +113,14 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
     @Override
     public void ejecutaActionDown(MotionEvent event) {
         lineX1 = event.getX();
-        //lineY1 = event.getY();
         lineX1 = nave1.getX();
-        //lineY1 = nave1.getY();
         lineX2 = nave1.getX();
-        //lineY2 = nave1.getY();
     }
 
     @Override
     public void ejecutaActionUp(MotionEvent event) {
         lineX2 = event.getX();
-        //lineY2 = event.getY();
         nave1.setX(lineX2);
-        //nave1.setVelActualX((lineX1 - lineX2) / 10);
-        //nave1.setVelActualY((lineY1 - lineY2) / 10);
     }
 
     @Override

@@ -43,7 +43,6 @@ public class Nave extends Sprite {
     public void onColisionEvent(Sprite s) {
         if (s instanceof Obstaculo) {
             Obstaculo obs = (Obstaculo) s;
-            obs.setVisible(false);
         }
     }
 

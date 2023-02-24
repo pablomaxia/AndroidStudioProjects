@@ -10,6 +10,7 @@ public class Obstaculo extends Sprite {
     private final float rozamiento = 0.98f;
     public float xInicial = 0;
     public float yInicial = 0;
+    public float radioInicial = 0;
     private EsquivarObstaculos game;
     private float x, y, radio;
     private int color;
@@ -25,6 +26,7 @@ public class Obstaculo extends Sprite {
         velInicialY = UtilidadesSprites.GRAVEDAD;
         this.xInicial = x;
         this.yInicial = y;
+        // this.radioInicial = radio;
         velActualX = velInicialX;
         velActualY = velInicialY;
 
@@ -48,7 +50,7 @@ public class Obstaculo extends Sprite {
             Nave nave = (Nave) s;
             EsquivarObstaculos.estadisticas.reducirVidas();
             y = yInicial;
-            radio += 5;
+            radio += 1.5;
         }
     }
 
@@ -87,25 +89,26 @@ public class Obstaculo extends Sprite {
     public void pinta(Canvas canvas) {
         paint.setColor(color);
         paint.setStrokeWidth(8);
-        // paint.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(x, y, radio, paint);
     }
 
     @Override
     public void setup() {
+        x = xInicial;
+        y = yInicial;
         velActualX = 0;
         velActualY = UtilidadesSprites.GRAVEDAD;
-
+        //radio = radioInicial;
     }
 
     @Override
     public void update() {
-        //x += (int) (Math.random() + 1) == 0 ? (int) (Math.random() + .1) : (int) (Math.random() - .1);
         velActualY = (int) (Math.random() * 10) + 1;
         y += velActualY;
+
         if (game.getmScreenY() <= y) {
             y = yInicial;
-            x += (int) (Math.random() * 10) + 1;
+            x += radio %2 == 0 ? 90 : -90;
             int puntuacion = EsquivarObstaculos.estadisticas.getPuntuacion() + (int) (radio) * 10;
             EsquivarObstaculos.estadisticas.setPuntuacion(puntuacion);
             if (puntuacion > EsquivarObstaculos.estadisticas.getPuntuacionMaxima())
