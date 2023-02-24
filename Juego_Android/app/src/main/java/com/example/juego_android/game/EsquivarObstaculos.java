@@ -4,10 +4,7 @@ package com.example.juego_android.game;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Looper;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.example.juego_android.bd.FireBaseBD;
 import com.example.juego_android.interfaces.OnTouchEventListener;
@@ -32,12 +29,12 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
     private final int x;
     private final int y;
     private final Obstaculo[] OBSTACULOS = new Obstaculo[]{
-            new Obstaculo(this, 180, 10, 15, Color.WHITE),
-            new Obstaculo(this, 360, 10, 18, Color.RED),
-            new Obstaculo(this, 480, 10, 24, Color.BLUE),
-            new Obstaculo(this, 560, 10, 15, Color.WHITE),
-            new Obstaculo(this, 740, 10, 18, Color.RED),
-            new Obstaculo(this, 920, 10, 24, Color.BLUE),
+            new Obstaculo(this, 65, UtilidadesSprites.POSICION_Y_INICIAL_OBSTACULOS, UtilidadesSprites.RADIO_OBSTACULOS, Color.WHITE),
+            new Obstaculo(this, 245, UtilidadesSprites.POSICION_Y_INICIAL_OBSTACULOS, UtilidadesSprites.RADIO_OBSTACULOS, Color.RED),
+            new Obstaculo(this, 425, UtilidadesSprites.POSICION_Y_INICIAL_OBSTACULOS, UtilidadesSprites.RADIO_OBSTACULOS, Color.BLUE),
+            new Obstaculo(this, 605, UtilidadesSprites.POSICION_Y_INICIAL_OBSTACULOS, UtilidadesSprites.RADIO_OBSTACULOS, Color.WHITE),
+            new Obstaculo(this, 785, UtilidadesSprites.POSICION_Y_INICIAL_OBSTACULOS, UtilidadesSprites.RADIO_OBSTACULOS, Color.RED),
+            new Obstaculo(this, 965, UtilidadesSprites.POSICION_Y_INICIAL_OBSTACULOS, UtilidadesSprites.RADIO_OBSTACULOS, Color.BLUE)
     };
     float lineX1, lineY1, lineX2, lineY2;
 

@@ -6,6 +6,10 @@ public class UtilidadesSprites {
     public static final float GRAVEDAD = -9.8f;
     public static final int POSICION_X_INICIAL_NAVE = 500;
     public static final int POSICION_Y_INICIAL_NAVE = 2050;
+    public static final int POSICION_Y_INICIAL_OBSTACULOS = 10;
+    public static final int RADIO_OBSTACULOS = 20;
+    public static final int VARIACION_X_OBSTACULOS = 45;
+    public static final float INCREMENTO_RADIO = 2.5f;
 
     public static float distancia(float x1, float y1, float x2, float y2) {
 

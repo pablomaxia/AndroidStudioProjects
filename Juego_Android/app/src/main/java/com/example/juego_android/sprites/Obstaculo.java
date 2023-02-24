@@ -26,7 +26,7 @@ public class Obstaculo extends Sprite {
         velInicialY = UtilidadesSprites.GRAVEDAD;
         this.xInicial = x;
         this.yInicial = y;
-        // this.radioInicial = radio;
+        this.radioInicial = radio;
         velActualX = velInicialX;
         velActualY = velInicialY;
 
@@ -50,7 +50,7 @@ public class Obstaculo extends Sprite {
             Nave nave = (Nave) s;
             EsquivarObstaculos.estadisticas.reducirVidas();
             y = yInicial;
-            radio += 1.5;
+            radio += UtilidadesSprites.INCREMENTO_RADIO;
         }
     }
 
@@ -98,7 +98,7 @@ public class Obstaculo extends Sprite {
         y = yInicial;
         velActualX = 0;
         velActualY = UtilidadesSprites.GRAVEDAD;
-        //radio = radioInicial;
+        radio = radioInicial;
     }
 
     @Override
@@ -108,12 +108,12 @@ public class Obstaculo extends Sprite {
 
         if (game.getmScreenY() <= y) {
             y = yInicial;
-            x += radio %2 == 0 ? 90 : -90;
+            x += radio % 5 == 0 ? UtilidadesSprites.VARIACION_X_OBSTACULOS : -UtilidadesSprites.VARIACION_X_OBSTACULOS;
             int puntuacion = EsquivarObstaculos.estadisticas.getPuntuacion() + (int) (radio) * 10;
             EsquivarObstaculos.estadisticas.setPuntuacion(puntuacion);
             if (puntuacion > EsquivarObstaculos.estadisticas.getPuntuacionMaxima())
                 EsquivarObstaculos.estadisticas.setPuntuacionMaxima(puntuacion);
-            radio += 1.5;
+            radio += UtilidadesSprites.INCREMENTO_RADIO;
         }
         //Comprobamos colisiones con los bordes y entre los actores
         onFireColisionSprite();
