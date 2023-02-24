@@ -1,36 +1,26 @@
 package com.example.probarmapas2023.ui.gallery;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationRequest;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-
-
 import com.example.probarmapas2023.R;
-
 import com.example.probarmapas2023.databinding.FragmentGalleryBinding;
-import com.example.probarmapas2023.databinding.FragmentHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
@@ -59,7 +49,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback {
     private String provider;
     private Polyline ruta;
     private Polyline polyline;
-    private ArrayList<LatLng> posiciones = new ArrayList<>();
+    private final ArrayList<LatLng> posiciones = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,9 +58,11 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback {
                 new ViewModelProvider(this).get(GalleryViewModel.class);
 
         binding = FragmentGalleryBinding.inflate(inflater, container, false);
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity());
         SupportMapFragment map = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        map.getMapAsync(this);
+        if (map != null) {
+            map.getMapAsync(this);
+        }
         return binding.getRoot();
     }
 
@@ -94,8 +86,8 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback {
                     distancia = SphericalUtil.computeDistanceBetween(ultima, previa);
                     distancia /= 1000;
                     distanciaTotal += distancia;
-                    double rumbo=SphericalUtil.computeHeading(previa, ultima);
-                    if (rumbo<0)rumbo+=360;
+                    double rumbo = SphericalUtil.computeHeading(previa, ultima);
+                    if (rumbo < 0) rumbo += 360;
                     previa = ultima;
                     MarkerOptions markerOptions = new MarkerOptions().position(ultima);
                     map.addMarker(markerOptions);
@@ -103,7 +95,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback {
                     DecimalFormat df = new DecimalFormat("#.##");
                     String distanciaFormat = df.format(distancia);
 
-                    Toast.makeText(getContext(), "Distancia: " + distanciaFormat+ "Rumbo: "+rumbo, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Distancia: " + distanciaFormat + "Rumbo: " + rumbo, Toast.LENGTH_SHORT).show();
 
                     PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
                     map.addPolyline(polylineOptions);
@@ -120,7 +112,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback {
         //Se usa la clase Criteria para obtener el mejor proveedor de localización
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
 
         //false se establece para que no esté activo permanentemente
         provider = locationManager.getBestProvider(criteria, false);
@@ -129,16 +121,17 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback {
         // a la ubicación del dispositivo (ACCESS_FINE_LOCATION y ACCESS_COARSE_LOCATION).
         // Si no tiene permisos, se solicita al usuario que los permita mediante
         // la función requestPermissions()
-        if (ActivityCompat.checkSelfPermission(getActivity(),
+        if (ActivityCompat.checkSelfPermission(requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this.getActivity(), new String[]{
+                && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this.requireActivity(), new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1000
             );
 
             //map.setMyLocationEnabled(true);
             if (locationManager.isProviderEnabled(provider)) {
-       //         Location location = locationManager.getLastKnownLocation(provider);
+                @SuppressLint("MissingPermission")
+                Location location = locationManager.getLastKnownLocation(provider);
             }
 
         }
