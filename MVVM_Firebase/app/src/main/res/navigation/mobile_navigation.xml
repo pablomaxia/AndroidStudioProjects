@@ -3,24 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_gallery">
+    app:startDestination="@+id/nav_usuarios">
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.probarmapas2023.ui.home.HomeFragment"
+        android:name="com.example.mvvm_firebase.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.probarmapas2023.ui.gallery.GalleryFragment"
+        android:name="com.example.mvvm_firebase.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
 
-
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.probarmapas2023.ui.slideshow.SlideshowFragment"
+        android:name="com.example.mvvm_firebase.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_usuarios"
+        android:name="com.example.mvvm_firebase.ui.usuarios.UsuarioFragment"
+        android:label="@string/menu_usuarios"
+        tools:layout="@layout/fragment_usuario_list" />
 </navigation>
