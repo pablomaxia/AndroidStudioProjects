@@ -2,9 +2,13 @@ package com.example.juego_android.game;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Looper;
 import android.view.MotionEvent;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.juego_android.bd.FireBaseBD;
 import com.example.juego_android.interfaces.OnTouchEventListener;
@@ -87,23 +91,31 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
             }
         }
         if (estadisticas.getVidas() == 0) {
-            pausado = true;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            actores.clear();
-            reiniciarEstadisticas();
-            guardarVariables();
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            setupGame();
-            pausado = false;
+            /*INICIO PREGUNTA EXAMEN*/
+            Looper.prepare();
+            AlertDialog.Builder alert = new AlertDialog.Builder(this.context);
+            alert.setTitle("Fin de la partida");
+            alert.setMessage("¿Volver a jugar?");
+            alert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    actores.clear();
+                    reiniciarEstadisticas();
+                    guardarVariables();
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    setupGame();
+                }
+            });
+            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            alert.show();
         }
+        /*FIN PREGUNTA EXAMEN*/
     }
 
     //Responde a los eventos táctiles de la pantalla
@@ -156,4 +168,30 @@ public class EsquivarObstaculos extends GameView implements OnTouchEventListener
         this.margenPantalla = margenPantalla;
     }
 
+    private void mostrarPantallaReinicio(AlertDialog.Builder alert) {
+        Looper.prepare();
+
+        alert.setTitle("Fin de la partida");
+        alert.setMessage("¿Volver a jugar?");
+        alert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                actores.clear();
+                reiniciarEstadisticas();
+                guardarVariables();
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                setupGame();
+            }
+        });
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        alert.show();
+        Looper.loop();
+    }
 }
+
