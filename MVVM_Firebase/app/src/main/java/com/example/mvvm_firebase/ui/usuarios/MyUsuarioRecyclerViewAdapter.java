@@ -1,15 +1,19 @@
 package com.example.mvvm_firebase.ui.usuarios;
 
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mvvm_firebase.R;
 import com.example.mvvm_firebase.databinding.FragmentUsuarioBinding;
 import com.example.mvvm_firebase.modelo.bd.FireBaseBD;
 import com.example.mvvm_firebase.modelo.entidades.Usuario;
@@ -41,18 +45,20 @@ public class MyUsuarioRecyclerViewAdapter extends RecyclerView.Adapter<MyUsuario
         fireBaseBD = FireBaseBD.getInstance();
         db = fireBaseBD.getBd();
 
-        for (int i = 0; i < 10; i++) {
-            crear(new Usuario(i, "TEST_" + i), DOCUMENTO + i, COLECCION);
-        }
+        /*if (mValues.size() == 0) {
+            for (int i = 0; i < 10; i++) {
+                crear(new Usuario(i, "TEST_" + i), DOCUMENTO + i, COLECCION);
+            }
+        }*/
         ver(DOCUMENTO, COLECCION);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder view = new ViewHolder(FragmentUsuarioBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
-        for (Usuario usuario : mValues) {
+        /*for (Usuario usuario : mValues) {
             Log.d(":::FIREBASE", usuario.getId() + ": " + usuario.getNombre());
-        }
+        }*/
 
         return view;
     }
@@ -67,7 +73,40 @@ public class MyUsuarioRecyclerViewAdapter extends RecyclerView.Adapter<MyUsuario
         holder.mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                borrarUno(holder.mItem.getId(), DOCUMENTO + holder.mItem.getId(), COLECCION);
+                borrarUno(holder.mItem.getId(), obtenerDocumento(holder.mItem), COLECCION);
+            }
+        });
+        holder.mButtonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("Title");
+                // I'm using fragment here so I'm using getView() to provide ViewGroup
+                // but you can provide here any other instance of ViewGroup from your Fragment / Activity
+                View viewInflated = LayoutInflater.from(view.getContext()).inflate(R.layout.form_update, (ViewGroup) view.getParent(), false);
+                // Set up the input
+                final EditText input = viewInflated.findViewById(R.id.nombre_update);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                builder.setView(viewInflated);
+
+                // Set up the buttons
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        holder.nombre = input.getText().toString();
+                        holder.mItem.setNombre(holder.nombre);
+                        editar(holder.mItem, obtenerDocumento(holder.mItem), COLECCION);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -85,27 +124,6 @@ public class MyUsuarioRecyclerViewAdapter extends RecyclerView.Adapter<MyUsuario
     @Override
     public int getItemCount() {
         return mValues.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mIdView;
-        public final TextView mNombreView;
-        public Usuario mItem;
-        public final Button mButtonDelete;
-        public final Button mButtonUpdate;
-
-        public ViewHolder(FragmentUsuarioBinding binding) {
-            super(binding.getRoot());
-            mIdView = binding.idUsuario;
-            mNombreView = binding.nombre;
-            mButtonDelete = binding.buttonDelete;
-            mButtonUpdate = binding.buttonUpdate;
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mNombreView.getText() + "'";
-        }
     }
 
     public void crear(Usuario usuario, String nombreDocumento, String nombreColeccion) {
@@ -147,7 +165,17 @@ public class MyUsuarioRecyclerViewAdapter extends RecyclerView.Adapter<MyUsuario
 
     public void editar(Usuario usuario, String nombreDocumento, String nombreColeccion) {
         db.collection(nombreColeccion)// Update
-                .document(nombreDocumento).update("id", usuario.getId(), "nombre", usuario.getNombre()).addOnSuccessListener(aVoid -> Log.d(":::FIREBASE", "Documento: " + usuario.getId() + "actualizado")).addOnFailureListener(e -> Log.w(":::FIREBASE", "Error actualizando documento: " + usuario.getId(), e));
+                .document(nombreDocumento).set(usuario).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            notifyItemChanged(usuario.getId());
+                            Log.d(":::FIREBASE", usuario.getId() + " => " + usuario.getNombre());
+                        } else {
+                            Log.w(":::FIREBASE", "Error actualizando documento: " + nombreDocumento);
+                        }
+                    }
+                });
     }
 
     public void borrarUno(int position, String nombreDocumento, String nombreColeccion) {
@@ -165,5 +193,31 @@ public class MyUsuarioRecyclerViewAdapter extends RecyclerView.Adapter<MyUsuario
                     }
 
                 });
+    }
+
+    private String obtenerDocumento(Usuario usuario) {
+        return DOCUMENTO + usuario.getId();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public final TextView mIdView;
+        public final TextView mNombreView;
+        public Usuario mItem;
+        public final Button mButtonDelete;
+        public final Button mButtonUpdate;
+        public String nombre;
+
+        public ViewHolder(FragmentUsuarioBinding binding) {
+            super(binding.getRoot());
+            mIdView = binding.idUsuario;
+            mNombreView = binding.nombre;
+            mButtonDelete = binding.buttonDelete;
+            mButtonUpdate = binding.buttonUpdate;
+        }
+
+        @Override
+        public String toString() {
+            return super.toString() + " '" + mNombreView.getText() + "'";
+        }
     }
 }
