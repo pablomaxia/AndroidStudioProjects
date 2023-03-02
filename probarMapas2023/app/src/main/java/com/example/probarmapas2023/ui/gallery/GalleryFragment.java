@@ -48,14 +48,15 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
 
     private FragmentGalleryBinding binding;
     private GoogleMap map;
-    private LatLng previa, siguiente, ultima;
+    private LatLng previa;
     private double distancia, distanciaTotal;
     private FusedLocationProviderClient fusedLocationClient;
-    private Location location;
+    private Location location = null;
     private List<Address> direccion = null;
     private LocationCallback locationCallback;
     private LocationManager locationManager;
-    private String provider;
+    MarkerOptions markerOptions;
+    private String provider, localidad;
     private Polyline ruta;
     private Polyline polyline;
     private final ArrayList<LatLng> posiciones = new ArrayList<>();
@@ -84,7 +85,9 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         previa = (new LatLng(location.getLatitude(), location.getLongitude()));
-        map.addMarker(new MarkerOptions().position(previa).title("Posición actual"));
+        markerOptions = new MarkerOptions().position(previa).title("Posición actual");
+        map.addMarker(markerOptions);
+
         map.moveCamera(CameraUpdateFactory.newLatLng(previa));
         posiciones.add(previa);
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -98,18 +101,20 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                     distanciaTotal += distancia;
                     double rumbo = SphericalUtil.computeHeading(previa, ultima);
                     if (rumbo < 0) rumbo += 360;
+
                     previa = ultima;
-                    MarkerOptions markerOptions = new MarkerOptions().position(ultima).title("Posición actual");
+                    markerOptions = new MarkerOptions().position(previa).title("Posición actual");
                     map.addMarker(markerOptions);
 
                     DecimalFormat df = new DecimalFormat("#.##");
                     String distanciaFormat = df.format(distancia);
+                    String rumboFormat = df.format(rumbo);
+                    String distanciaTotalFormat = df.format(distanciaTotal);
 
-                    Toast.makeText(getContext(), "Distancia: " + distanciaFormat + "Rumbo: " + rumbo, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat + " Distancia Total: " + distanciaTotalFormat, Toast.LENGTH_SHORT).show();
 
                     PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
                     map.addPolyline(polylineOptions);
-
 
                 }
             }
@@ -119,7 +124,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
     @SuppressLint("MissingPermission")
     private void obtenerPosicion() {
         //Inicializar el manager que nos va a dar la geoposición en base al GPS
-        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         //Se usa la clase Criteria para obtener el mejor proveedor de localización
         Criteria criteria = new Criteria();
@@ -130,10 +135,18 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
 
         obtenerPermisos();
         map.setMyLocationEnabled(true);
-        //if (locationManager.isProviderEnabled(provider)) {
-        location = locationManager.getLastKnownLocation(provider);
-        onLocationChanged(location);
-        //}
+
+        if (locationManager.isProviderEnabled(provider)) {
+            this.location = locationManager.getLastKnownLocation(provider);
+            if (this.location == null) {
+                this.location = new Location(provider);
+                //SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+                //sharedPreferences.edit().putString("CadenaPrefs", "").commit();
+                //location.setLatitude(20);
+                //location.setLongitude(20);
+            }
+            onLocationChanged(location);
+        }
         //Obtenemos la primera localización que nos sirve de referencia
         Log.d(":::MAPA", location + "");
     }
@@ -185,8 +198,9 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
 
         direccion = null;
         try {
-            int x = 0;
             direccion = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            localidad = direccion.get(0).getLocality();
+            Log.d(":::MAPA", localidad);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -230,8 +244,8 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
             ActivityCompat.requestPermissions(this.requireActivity(), new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1000
             );
-
         }
+        return;
     }
 
 }
