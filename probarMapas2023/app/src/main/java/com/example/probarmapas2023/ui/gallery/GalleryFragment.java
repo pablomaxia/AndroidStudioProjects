@@ -93,7 +93,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         map.moveCamera(CameraUpdateFactory.newLatLng(previa));
         posiciones.add(previa);
         if (posicionesRecyclerView.isEmpty())
-            posicionesRecyclerView.add(new Posicion(direccionStr,previa));
+            posicionesRecyclerView.add(new Posicion(direccionStr, previa));
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -102,12 +102,12 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                 Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
                 try {
                     direccion = geocoder.getFromLocation(ultima.latitude, ultima.longitude, 1);
-                    direccionStr = direccion != null? direccion.get(0).getAddressLine(0): "No hay una dirección";
+                    direccionStr = !direccion.isEmpty() ? direccion.get(0).getAddressLine(0) : "No hay una dirección";
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 posiciones.add(ultima);
-                posicionesRecyclerView.add(new Posicion(direccionStr,ultima));
+                posicionesRecyclerView.add(new Posicion(direccionStr, ultima));
                 if (ultima != null) {
                     distancia = SphericalUtil.computeDistanceBetween(ultima, previa);
                     distancia /= 1000;
@@ -212,7 +212,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         direccion = null;
         try {
             direccion = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            direccionStr = direccion.get(0).getAddressLine(0);
+            direccionStr = !direccion.isEmpty() ? direccion.get(0).getAddressLine(0) : "No hay una dirección";
             Log.d(":::MAPA", direccionStr);
         } catch (IOException e) {
             e.printStackTrace();
