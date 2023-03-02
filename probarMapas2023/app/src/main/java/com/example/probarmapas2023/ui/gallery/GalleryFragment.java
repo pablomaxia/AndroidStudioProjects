@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.probarmapas2023.R;
 import com.example.probarmapas2023.databinding.FragmentGalleryBinding;
+import com.example.probarmapas2023.modelo.Posicion;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
@@ -56,10 +57,11 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
     private LocationCallback locationCallback;
     private LocationManager locationManager;
     MarkerOptions markerOptions;
-    private String provider, localidad;
+    private String provider, calle;
     private Polyline ruta;
     private Polyline polyline;
-    private final ArrayList<LatLng> posiciones = new ArrayList<>();
+    public final ArrayList<LatLng> posiciones = new ArrayList<>();
+    public static final ArrayList<Posicion> posicionesRecyclerView = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -90,11 +92,22 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
 
         map.moveCamera(CameraUpdateFactory.newLatLng(previa));
         posiciones.add(previa);
+        if (posicionesRecyclerView.isEmpty())
+            posicionesRecyclerView.add(new Posicion(calle,previa));
+
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng ultima) {
                 map.clear(); // Limpiar marcadores previos
+                Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+                try {
+                    direccion = geocoder.getFromLocation(ultima.latitude, ultima.longitude, 1);
+                    calle = direccion != null? direccion.get(0).getAddressLine(0): "No hay una dirección";
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 posiciones.add(ultima);
+                posicionesRecyclerView.add(new Posicion(calle,ultima));
                 if (ultima != null) {
                     distancia = SphericalUtil.computeDistanceBetween(ultima, previa);
                     distancia /= 1000;
@@ -199,8 +212,8 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         direccion = null;
         try {
             direccion = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            localidad = direccion.get(0).getLocality();
-            Log.d(":::MAPA", localidad);
+            calle = direccion.get(0).getAddressLine(0);
+            Log.d(":::MAPA", calle);
         } catch (IOException e) {
             e.printStackTrace();
         }
