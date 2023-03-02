@@ -32,7 +32,7 @@ public class HomeRecyclerViewAdapter  extends RecyclerView.Adapter<HomeRecyclerV
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mAddressView.setText("Localidad: " + holder.mItem.getCalle());
+        holder.mAddressView.setText("Dirección: " + holder.mItem.getDireccion());
         holder.mLatitudeView.setText("Latitud: " + holder.mItem.getLatLng().latitude);
         holder.mLongitudeView.setText("Longitud: " + holder.mItem.getLatLng().longitude);
 

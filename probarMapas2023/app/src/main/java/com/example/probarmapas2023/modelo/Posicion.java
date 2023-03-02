@@ -3,20 +3,20 @@ package com.example.probarmapas2023.modelo;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Posicion {
-    private String calle;
+    private String direccion;
     private LatLng latLng;
 
-    public Posicion(String calle, LatLng latLng) {
-        this.calle = calle;
+    public Posicion(String direccion, LatLng latLng) {
+        this.direccion = direccion;
         this.latLng = latLng;
     }
 
-    public String getCalle() {
-        return calle;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void setCalle(String calle) {
-        this.calle = calle;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public LatLng getLatLng() {

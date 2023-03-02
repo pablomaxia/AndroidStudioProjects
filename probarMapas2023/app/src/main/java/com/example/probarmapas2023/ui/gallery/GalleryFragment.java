@@ -57,7 +57,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
     private LocationCallback locationCallback;
     private LocationManager locationManager;
     MarkerOptions markerOptions;
-    private String provider, calle;
+    private String provider, direccionStr;
     private Polyline ruta;
     private Polyline polyline;
     public final ArrayList<LatLng> posiciones = new ArrayList<>();
@@ -93,7 +93,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         map.moveCamera(CameraUpdateFactory.newLatLng(previa));
         posiciones.add(previa);
         if (posicionesRecyclerView.isEmpty())
-            posicionesRecyclerView.add(new Posicion(calle,previa));
+            posicionesRecyclerView.add(new Posicion(direccionStr,previa));
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -102,12 +102,12 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                 Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
                 try {
                     direccion = geocoder.getFromLocation(ultima.latitude, ultima.longitude, 1);
-                    calle = direccion != null? direccion.get(0).getAddressLine(0): "No hay una dirección";
+                    direccionStr = direccion != null? direccion.get(0).getAddressLine(0): "No hay una dirección";
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 posiciones.add(ultima);
-                posicionesRecyclerView.add(new Posicion(calle,ultima));
+                posicionesRecyclerView.add(new Posicion(direccionStr,ultima));
                 if (ultima != null) {
                     distancia = SphericalUtil.computeDistanceBetween(ultima, previa);
                     distancia /= 1000;
@@ -212,8 +212,8 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         direccion = null;
         try {
             direccion = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            calle = direccion.get(0).getAddressLine(0);
-            Log.d(":::MAPA", calle);
+            direccionStr = direccion.get(0).getAddressLine(0);
+            Log.d(":::MAPA", direccionStr);
         } catch (IOException e) {
             e.printStackTrace();
         }
