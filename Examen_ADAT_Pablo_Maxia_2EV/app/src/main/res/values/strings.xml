@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Examen_ADAT_Pablo_Maxia_2EV</string>
+    <string name="longitud_inicial">Longitud Inicial</string>
+    <string name="latiitud_inicial">Latiitud Inicial</string>
+    <string name="distancia">Distancia</string>
+    <string name="rumbo">Rumbo</string>
+    <string name="crear_ruta">Crear Ruta</string>
+</resources>

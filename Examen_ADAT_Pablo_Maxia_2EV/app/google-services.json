@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "911528709519",
+    "project_id": "rutas-pablo-maxia",
+    "storage_bucket": "rutas-pablo-maxia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911528709519:android:61e27cff179831caefcffa",
+        "android_client_info": {
+          "package_name": "com.examen_adat_pablo_maxia_2ev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911528709519-li2iqig1b8bqfff3jub9ijklt6crolsl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDplQMi77xF2uh30zAa3MpKSGFm1PQ9Uog"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911528709519-li2iqig1b8bqfff3jub9ijklt6crolsl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911528709519:android:778d53aee374ce48efcffa",
+        "android_client_info": {
+          "package_name": "com.example.examen_adat_pablo_maxia_2ev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911528709519-li2iqig1b8bqfff3jub9ijklt6crolsl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDplQMi77xF2uh30zAa3MpKSGFm1PQ9Uog"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911528709519-li2iqig1b8bqfff3jub9ijklt6crolsl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
