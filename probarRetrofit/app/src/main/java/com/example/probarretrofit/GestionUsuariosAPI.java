@@ -11,7 +11,7 @@ import retrofit2.http.GET;
 public interface GestionUsuariosAPI {
 
 
-    @GET("usuarios")
+    @GET("/api/usuarios")
     Call<List<Usuario>> getUsuarios();
 
 }
