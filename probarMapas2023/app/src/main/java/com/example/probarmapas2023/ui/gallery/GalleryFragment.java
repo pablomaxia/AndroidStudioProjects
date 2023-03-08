@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,7 +90,6 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Toolbar toolbar = binding.toolbar;
-        ((AppCompatActivity)requireActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle("Opciones");
         toolbar.inflateMenu(R.menu.gallery_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -112,6 +112,13 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                 return true;
             }
         });
+        //((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        requireActivity().getMenuInflater().inflate(R.menu.gallery_menu, menu);
     }
 
     @Override
