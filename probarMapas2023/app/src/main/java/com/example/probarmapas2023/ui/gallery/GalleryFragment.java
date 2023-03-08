@@ -3,6 +3,7 @@ package com.example.probarmapas2023.ui.gallery;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -14,11 +15,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -49,7 +56,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
 
     private FragmentGalleryBinding binding;
     private GoogleMap map;
-    private LatLng previa;
+    private LatLng previa, ultima;
     private double distancia, distanciaTotal;
     private FusedLocationProviderClient fusedLocationClient;
     private Location location = null;
@@ -76,6 +83,35 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
             map.getMapAsync(this);
         }
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Toolbar toolbar = binding.toolbar;
+        ((AppCompatActivity)requireActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("Opciones");
+        toolbar.inflateMenu(R.menu.gallery_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.option1:
+                        colocarPosicionLatLng();
+                        break;
+                    case R.id.option2:
+                        colocarPosicionDistRumbo();
+                        break;
+                    case R.id.option3:
+                        mostrarUbicacion();
+                        break;
+                    case R.id.option4:
+                        borrarPosiciones();
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -260,5 +296,142 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         }
         return;
     }
+
+    private void colocarPosicionLatLng() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.requireContext());
+        View viewInflated = getLayoutInflater().inflate(R.layout.latlng_dialog, null);
+        EditText latText = viewInflated.findViewById(R.id.latitud);
+        EditText longText = viewInflated.findViewById(R.id.longitud);
+        alert.setTitle("Colocar posición");
+        alert.setMessage("Latitud y longitud");
+        alert.setView(viewInflated);
+        alert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                double lat = Double.parseDouble(latText.getText().toString());
+                double lng = Double.parseDouble(longText.getText().toString());
+                LatLng latLng = new LatLng(lat, lng);
+                markerOptions = new MarkerOptions().position(latLng).title("Posición actual");
+                map.addMarker(markerOptions);
+
+                map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                posiciones.add(latLng);
+                PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
+                map.addPolyline(polylineOptions);
+                dialog.dismiss();
+            }
+        });
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
+    }
+
+    private void colocarPosicionDistRumbo() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.requireContext());
+        View viewInflated = getLayoutInflater().inflate(R.layout.dist_dialog, (ViewGroup) binding.getRoot(), false);
+        EditText distText = viewInflated.findViewById(R.id.distancia);
+        EditText rumboText = viewInflated.findViewById(R.id.rumbo);
+        alert.setTitle("Colocar posición");
+        alert.setMessage("Distancia y rumbo");
+        alert.setView(viewInflated);
+        alert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                double dist = Double.parseDouble(distText.getText().toString());
+                double rumbo = Double.parseDouble(rumboText.getText().toString());
+                ultima = new LatLng(dist, rumbo);
+                previa = new LatLng(0, 0);
+
+                posiciones.add(ultima);
+                if (ultima != null) {
+
+                    dist = SphericalUtil.computeDistanceBetween(ultima, previa);
+                    dist /= 1000;
+                    distanciaTotal += dist;
+                    rumbo = SphericalUtil.computeHeading(previa, ultima);
+                    if (rumbo < 0) rumbo += 360;
+                    previa = ultima;
+                    MarkerOptions markerOptions = new MarkerOptions().position(ultima);
+                    map.addMarker(markerOptions);
+                    dialog.dismiss();
+
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    String distanciaFormat = df.format(dist);
+                    String rumboFormat = df.format(rumbo);
+
+                    Toast.makeText(getContext(), "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat, Toast.LENGTH_SHORT).show();
+
+                    PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
+                    map.addPolyline(polylineOptions);
+
+
+                }
+
+            }
+        });
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
+
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private void mostrarUbicacion() {
+        //Inicializar el manager que nos va a dar la geoposición en base al GPS
+        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        //Se usa la clase Criteria para obtener el mejor proveedor de localización
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+
+        //false se establece para que no esté activo permanentemente
+        provider = locationManager.getBestProvider(criteria, false);
+
+        obtenerPermisos();
+        map.setMyLocationEnabled(true);
+
+        if (locationManager.isProviderEnabled(provider)) {
+            this.location = locationManager.getLastKnownLocation(provider);
+            if (this.location == null) {
+                this.location = new Location(provider);
+            }
+            onLocationChanged(location);
+        }
+        LatLng posicion = new LatLng(this.location.getLatitude(), this.location.getLongitude());
+        posiciones.add(posicion);
+        if (posicion != null) {
+            distancia = SphericalUtil.computeDistanceBetween(posicion, previa);
+            distancia /= 1000;
+            double rumbo = SphericalUtil.computeHeading(previa, posicion);
+            if (rumbo < 0) rumbo += 360;
+
+            previa = posicion;
+            markerOptions = new MarkerOptions().position(previa).title("Posición actual");
+            map.addMarker(markerOptions);
+
+            DecimalFormat df = new DecimalFormat("#.##");
+            String distanciaFormat = df.format(distancia);
+            String rumboFormat = df.format(rumbo);
+
+            Toast.makeText(getContext(), "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat, Toast.LENGTH_SHORT).show();
+
+            PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
+            map.addPolyline(polylineOptions);
+
+        }
+        //Obtenemos la primera localización que nos sirve de referencia
+        Log.d(":::MAPA", location + "");
+    }
+
+    private void borrarPosiciones() {
+        map.clear();
+        posiciones.clear();
+    }
+
 
 }

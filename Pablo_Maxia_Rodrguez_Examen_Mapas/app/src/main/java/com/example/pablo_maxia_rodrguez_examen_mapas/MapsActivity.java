@@ -166,8 +166,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     dist = SphericalUtil.computeDistanceBetween(ultima, previa);
                     dist /= 1000;
                     distanciaTotal += dist;
-                    rumbo=SphericalUtil.computeHeading(previa, ultima);
-                    if (rumbo<0)rumbo+=360;
+                    rumbo = SphericalUtil.computeHeading(previa, ultima);
+                    if (rumbo < 0) rumbo += 360;
                     previa = ultima;
                     MarkerOptions markerOptions = new MarkerOptions().position(ultima);
                     mMap.addMarker(markerOptions);
@@ -175,8 +175,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     DecimalFormat df = new DecimalFormat("#.##");
                     String distanciaFormat = df.format(dist);
+                    String rumboFormat = df.format(rumbo);
 
-                    Toast.makeText(MapsActivity.this, "Distancia: " + distanciaFormat+ "Rumbo: "+rumbo, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivity.this, "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat, Toast.LENGTH_SHORT).show();
 
                     PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
                     mMap.addPolyline(polylineOptions);

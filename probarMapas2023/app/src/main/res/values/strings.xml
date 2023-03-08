@@ -11,4 +11,11 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="google_maps_key">AIzaSyDMHhHjjrSlmrHXOhGS-4sgbxEAgaiJoB8</string>
+
+    <string name="latitud">Latitud</string>
+    <string name="longitud">Longitud</string>
+    <string name="ok">OK</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="distancia">Distancia</string>
+    <string name="rumbo">Rumbo</string>
 </resources>
