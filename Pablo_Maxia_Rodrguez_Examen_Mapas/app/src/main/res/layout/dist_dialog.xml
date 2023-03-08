@@ -2,68 +2,55 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dist_form"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/latlng_form">
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/latitudView"
+        android:id="@+id/distanciaView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="55dp"
         android:layout_marginTop="74dp"
-        android:layout_marginEnd="313dp"
-        android:layout_marginBottom="21dp"
-        android:text="Latitud"
-        app:layout_constraintBottom_toTopOf="@+id/longitud"
+        android:text="@string/distancia"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/longitud"
+        android:id="@+id/distancia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="146dp"
-        android:layout_marginBottom="48dp"
         android:ems="10"
         android:inputType="number"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/longitudView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/latitudView"
+        app:layout_constraintTop_toBottomOf="@+id/distanciaView"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
-        android:id="@+id/longitudView"
+        android:id="@+id/rumboView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="55dp"
         android:layout_marginTop="37dp"
-        android:layout_marginEnd="301dp"
-        android:text="Longitud"
-        app:layout_constraintBottom_toTopOf="@+id/latitud"
+        android:text="@string/rumbo"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/longitud" />
+        app:layout_constraintTop_toBottomOf="@+id/distancia" />
 
     <EditText
-        android:id="@+id/latitud"
+        android:id="@+id/rumbo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="81dp"
-        android:layout_marginEnd="146dp"
-        android:layout_marginBottom="450dp"
         android:ems="10"
         android:inputType="number"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/longitud"
+        app:layout_constraintTop_toBottomOf="@+id/rumboView"
         tools:ignore="SpeakableTextPresentCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>

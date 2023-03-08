@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -41,12 +43,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     private final ArrayList<LatLng> posiciones = new ArrayList<>();
-    private LatLng previa;
+    private LatLng previa, ultima;
     private Location location = null;
     private LocationManager locationManager;
     private MarkerOptions markerOptions;
     private String provider;
-    private double distancia;
+    private double distancia, distanciaTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,12 +115,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void colocarPosicionLatLng() {
-        EditText latText = findViewById(R.id.latitud);
-        EditText longText = findViewById(R.id.longitud);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        View viewInflated = getLayoutInflater().inflate(R.layout.latlng_dialog, null);
+        EditText latText = viewInflated.findViewById(R.id.latitud);
+        EditText longText = viewInflated.findViewById(R.id.longitud);
         alert.setTitle("Colocar posición");
         alert.setMessage("Latitud y longitud");
-        alert.setView(R.id.latlng_form);
+        alert.setView(viewInflated);
         alert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 double lat = Double.parseDouble(latText.getText().toString());
@@ -129,36 +132,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 posiciones.add(latLng);
+                PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
+                mMap.addPolyline(polylineOptions);
+                dialog.dismiss();
             }
         });
         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
             }
         });
         alert.show();
     }
 
     private void colocarPosicionDistRumbo() {
-        EditText latText = findViewById(R.id.latitud);
-        EditText longText = findViewById(R.id.longitud);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        View viewInflated = getLayoutInflater().inflate(R.layout.dist_dialog, (ViewGroup) binding.getRoot(), false);
+        EditText distText = viewInflated.findViewById(R.id.distancia);
+        EditText rumboText = viewInflated.findViewById(R.id.rumbo);
         alert.setTitle("Colocar posición");
         alert.setMessage("Distancia y rumbo");
-        alert.setView(R.id.latlng_form);
+        alert.setView(viewInflated);
         alert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                double lat = Double.parseDouble(latText.getText().toString());
-                double lng = Double.parseDouble(longText.getText().toString());
-                LatLng latLng = new LatLng(lat, lng);
-                markerOptions = new MarkerOptions().position(latLng).title("Posición actual");
-                mMap.addMarker(markerOptions);
+                double dist = Double.parseDouble(distText.getText().toString());
+                double rumbo = Double.parseDouble(rumboText.getText().toString());
+                ultima = new LatLng(dist, rumbo);
+                previa = new LatLng(0, 0);
 
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                posiciones.add(latLng);
+                posiciones.add(ultima);
+                if (ultima != null) {
+
+                    dist = SphericalUtil.computeDistanceBetween(ultima, previa);
+                    dist /= 1000;
+                    distanciaTotal += dist;
+                    rumbo=SphericalUtil.computeHeading(previa, ultima);
+                    if (rumbo<0)rumbo+=360;
+                    previa = ultima;
+                    MarkerOptions markerOptions = new MarkerOptions().position(ultima);
+                    mMap.addMarker(markerOptions);
+                    dialog.dismiss();
+
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    String distanciaFormat = df.format(dist);
+
+                    Toast.makeText(MapsActivity.this, "Distancia: " + distanciaFormat+ "Rumbo: "+rumbo, Toast.LENGTH_SHORT).show();
+
+                    PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
+                    mMap.addPolyline(polylineOptions);
+
+
+                }
+
             }
         });
         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
             }
         });
         alert.show();

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Pablo_Maxiá_Rodríguez_Examen_Mapas</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="latitud">Latitud</string>
+    <string name="longitud">Longitud</string>
+    <string name="ok">OK</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="distancia">Distancia</string>
+    <string name="rumbo">Rumbo</string>
 </resources>
