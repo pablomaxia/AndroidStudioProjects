@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -35,7 +34,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
@@ -43,7 +41,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     private final ArrayList<LatLng> posiciones = new ArrayList<>();
-    private LatLng previa, ultima;
+    private LatLng ultima = null;
+    private LatLng previa = null;
     private Location location = null;
     private LocationManager locationManager;
     private MarkerOptions markerOptions;
@@ -100,12 +99,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        previa = (new LatLng(0, 0));
-        markerOptions = new MarkerOptions().position(previa).title("Posición actual");
-        mMap.addMarker(markerOptions);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(previa));
-        posiciones.add(previa);
+        ultima = (new LatLng(0, 0));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(ultima));
     }
 
     @Override
@@ -126,14 +121,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(DialogInterface dialog, int id) {
                 double lat = Double.parseDouble(latText.getText().toString());
                 double lng = Double.parseDouble(longText.getText().toString());
-                LatLng latLng = new LatLng(lat, lng);
-                markerOptions = new MarkerOptions().position(latLng).title("Posición actual");
-                mMap.addMarker(markerOptions);
+                ultima = new LatLng(lat, lng);
 
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                posiciones.add(latLng);
-                PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
-                mMap.addPolyline(polylineOptions);
+                anadirMarcadorMapa(ultima, "Posición actual");
+                posiciones.add(ultima);
+                previa = ultima;
+                anadirPosicionesLinea();
+
                 dialog.dismiss();
             }
         });
@@ -151,40 +145,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         EditText distText = viewInflated.findViewById(R.id.distancia);
         EditText rumboText = viewInflated.findViewById(R.id.rumbo);
         alert.setTitle("Colocar posición");
-        alert.setMessage("Distancia y rumbo");
+        alert.setMessage("Distancia (KM) y rumbo (º)");
         alert.setView(viewInflated);
         alert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 double dist = Double.parseDouble(distText.getText().toString());
                 double rumbo = Double.parseDouble(rumboText.getText().toString());
-                ultima = new LatLng(dist, rumbo);
-                previa = new LatLng(0, 0);
+                dist *= 1000;
+                if (rumbo < 0) rumbo += 360;
+                LatLng destino = SphericalUtil.computeOffset(ultima, dist, rumbo);
+                ultima = destino;
 
-                posiciones.add(ultima);
                 if (ultima != null) {
-
-                    dist = SphericalUtil.computeDistanceBetween(ultima, previa);
-                    dist /= 1000;
-                    distanciaTotal += dist;
-                    rumbo = SphericalUtil.computeHeading(previa, ultima);
-                    if (rumbo < 0) rumbo += 360;
+                    posiciones.add(ultima);
                     previa = ultima;
-                    MarkerOptions markerOptions = new MarkerOptions().position(ultima);
-                    mMap.addMarker(markerOptions);
+                    anadirMarcadorMapa(ultima, "Posición actual");
                     dialog.dismiss();
 
-                    DecimalFormat df = new DecimalFormat("#.##");
-                    String distanciaFormat = df.format(dist);
-                    String rumboFormat = df.format(rumbo);
-
-                    Toast.makeText(MapsActivity.this, "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat, Toast.LENGTH_SHORT).show();
-
-                    PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
-                    mMap.addPolyline(polylineOptions);
-
-
+                    anadirPosicionesLinea();
                 }
-
             }
         });
         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -193,7 +172,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         alert.show();
-
     }
 
 
@@ -218,29 +196,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 this.location = new Location(provider);
             }
             onLocationChanged(location);
+            ultima = new LatLng(location.getLatitude(), location.getLongitude());
+            posiciones.add(ultima);
+            anadirMarcadorMapa(ultima, "Posición actual");
+            anadirPosicionesLinea();
         }
-        LatLng posicion = new LatLng(this.location.getLatitude(), this.location.getLongitude());
-        posiciones.add(posicion);
-        if (posicion != null) {
-            distancia = SphericalUtil.computeDistanceBetween(posicion, previa);
-            distancia /= 1000;
-            double rumbo = SphericalUtil.computeHeading(previa, posicion);
-            if (rumbo < 0) rumbo += 360;
 
-            previa = posicion;
-            markerOptions = new MarkerOptions().position(previa).title("Posición actual");
-            mMap.addMarker(markerOptions);
-
-            DecimalFormat df = new DecimalFormat("#.##");
-            String distanciaFormat = df.format(distancia);
-            String rumboFormat = df.format(rumbo);
-
-            Toast.makeText(this, "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat, Toast.LENGTH_SHORT).show();
-
-            PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
-            mMap.addPolyline(polylineOptions);
-
-        }
         //Obtenemos la primera localización que nos sirve de referencia
         Log.d(":::MAPA", location + "");
     }
@@ -248,6 +209,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void borrarPosiciones() {
         mMap.clear();
         posiciones.clear();
+    }
+
+    private void anadirMarcadorMapa(LatLng posicion, String texto) {
+        markerOptions = new MarkerOptions().position(posicion).title(texto);
+        mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(posicion));
+    }
+
+    private void anadirPosicionesLinea() {
+        PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
+        mMap.addPolyline(polylineOptions);
     }
 
     private void obtenerPermisos() {
@@ -280,27 +252,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Paquete de Android para resolver coordenadas a partir de una dirección y
         //viceversa
     }
-
-    //@SuppressLint("MissingPermission")
-    //@Override
-    /*public void onResume() {
-        super.onResume();
-        //Inicializar el manager que nos va a dar la geoposición en base al GPS
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        //Se usa la clase Criteria para obtener el mejor proveedor de localización
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-
-        //false se establece para que no esté activo permanentemente
-        provider = locationManager.getBestProvider(criteria, false);
-
-        obtenerPermisos();
-        // requestLocationUpdates registra un "listener" para recibir actualizaciones de la ubicación.
-        // el intervalo de tiempo para actualizar argumentos (en milisegundos)
-        // y la distancia mínima que debe recorrer el usuario para que se genere una actualización (en metros).
-        // Finalmente, la actividad actual se pasa como argumento, ya que implementa la interface "LocationListener",
-        // para recibir las actualizaciones de ubicación.*/
-    // locationManager.requestLocationUpdates(provider, 500 /*milisegundos de update*/, 1 /*metros de recorrido del usuario*/, this);
-    //}
 }

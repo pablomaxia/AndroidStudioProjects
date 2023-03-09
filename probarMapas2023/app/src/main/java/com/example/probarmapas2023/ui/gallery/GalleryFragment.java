@@ -25,7 +25,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -317,6 +316,8 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                 double lat = Double.parseDouble(latText.getText().toString());
                 double lng = Double.parseDouble(longText.getText().toString());
                 LatLng latLng = new LatLng(lat, lng);
+                ultima = latLng;
+                previa = ultima;
                 markerOptions = new MarkerOptions().position(latLng).title("Posición actual");
                 map.addMarker(markerOptions);
                 Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
@@ -355,8 +356,14 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
             public void onClick(DialogInterface dialog, int id) {
                 double dist = Double.parseDouble(distText.getText().toString());
                 double rumbo = Double.parseDouble(rumboText.getText().toString());
-                ultima = new LatLng(dist, rumbo);
-                previa = new LatLng(0, 0);
+                dist /= 1000;
+                if (rumbo < 0) rumbo += 360;
+                //ultima = new LatLng(dist, rumbo);
+                //previa = new LatLng(0, 0);
+                distanciaTotal += dist;
+
+//                dist = SphericalUtil.computeDistanceBetween(ultima, previa);
+  //              rumbo = SphericalUtil.computeHeading(previa, ultima);
 
                 Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
                 try {
@@ -370,29 +377,19 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                 posiciones.add(ultima);
                 posicionesRecyclerView.add(new Posicion(direccionStr, ultima));
 
-                if (ultima != null) {
+                previa = ultima;
+                MarkerOptions markerOptions = new MarkerOptions().position(ultima);
+                map.addMarker(markerOptions);
+                dialog.dismiss();
 
-                    dist = SphericalUtil.computeDistanceBetween(ultima, previa);
-                    dist /= 1000;
-                    distanciaTotal += dist;
-                    rumbo = SphericalUtil.computeHeading(previa, ultima);
-                    if (rumbo < 0) rumbo += 360;
-                    previa = ultima;
-                    MarkerOptions markerOptions = new MarkerOptions().position(ultima);
-                    map.addMarker(markerOptions);
-                    dialog.dismiss();
+                DecimalFormat df = new DecimalFormat("#.##");
+                String distanciaFormat = df.format(dist);
+                String rumboFormat = df.format(rumbo);
 
-                    DecimalFormat df = new DecimalFormat("#.##");
-                    String distanciaFormat = df.format(dist);
-                    String rumboFormat = df.format(rumbo);
+                Toast.makeText(getContext(), "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat, Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(getContext(), "Distancia: " + distanciaFormat + " Rumbo: " + rumboFormat, Toast.LENGTH_SHORT).show();
-
-                    PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
-                    map.addPolyline(polylineOptions);
-
-
-                }
+                PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
+                map.addPolyline(polylineOptions);
 
             }
         });
