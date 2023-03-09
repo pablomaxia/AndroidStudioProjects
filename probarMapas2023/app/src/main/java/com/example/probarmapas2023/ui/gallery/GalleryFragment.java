@@ -141,7 +141,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng ultima) {
-                map.clear(); // Limpiar marcadores previos
+//                map.clear(); // Limpiar marcadores previos
                 Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
                 try {
                     direccion = geocoder.getFromLocation(ultima.latitude, ultima.longitude, 1);
@@ -319,9 +319,17 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                 LatLng latLng = new LatLng(lat, lng);
                 markerOptions = new MarkerOptions().position(latLng).title("Posición actual");
                 map.addMarker(markerOptions);
+                Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+                try {
+                    direccion = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    direccionStr = !direccion.isEmpty() ? direccion.get(0).getAddressLine(0) : "No hay una dirección";
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 posiciones.add(latLng);
+                posicionesRecyclerView.add(new Posicion(direccionStr, latLng));
                 PolylineOptions polylineOptions = new PolylineOptions().addAll(posiciones).color(Color.RED);
                 map.addPolyline(polylineOptions);
                 dialog.dismiss();
@@ -350,7 +358,18 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
                 ultima = new LatLng(dist, rumbo);
                 previa = new LatLng(0, 0);
 
+                Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+                try {
+                    direccion = geocoder.getFromLocation(ultima.latitude, ultima.longitude, 1);
+                    direccionStr = !direccion.isEmpty() ? direccion.get(0).getAddressLine(0) : "No hay una dirección";
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                map.moveCamera(CameraUpdateFactory.newLatLng(ultima));
                 posiciones.add(ultima);
+                posicionesRecyclerView.add(new Posicion(direccionStr, ultima));
+
                 if (ultima != null) {
 
                     dist = SphericalUtil.computeDistanceBetween(ultima, previa);
@@ -438,6 +457,7 @@ public class GalleryFragment extends Fragment implements OnMapReadyCallback, Loc
     private void borrarPosiciones() {
         map.clear();
         posiciones.clear();
+        posicionesRecyclerView.clear();
     }
 
 
